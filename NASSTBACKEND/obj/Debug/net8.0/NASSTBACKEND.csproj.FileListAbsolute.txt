@@ -142,3 +142,13 @@ C:\dev\NASST\NASST\NASSTBACKEND\bin\Debug\net8.0\ru\Microsoft.CodeAnalysis.Works
 C:\dev\NASST\NASST\NASSTBACKEND\bin\Debug\net8.0\tr\Microsoft.CodeAnalysis.Workspaces.resources.dll
 C:\dev\NASST\NASST\NASSTBACKEND\bin\Debug\net8.0\zh-Hans\Microsoft.CodeAnalysis.Workspaces.resources.dll
 C:\dev\NASST\NASST\NASSTBACKEND\bin\Debug\net8.0\zh-Hant\Microsoft.CodeAnalysis.Workspaces.resources.dll
+C:\dev\NASST\NASST\NASSTBACKEND\bin\Debug\net8.0\Microsoft.AspNetCore.Mvc.Razor.Extensions.dll
+C:\dev\NASST\NASST\NASSTBACKEND\bin\Debug\net8.0\Microsoft.AspNetCore.Razor.Language.dll
+C:\dev\NASST\NASST\NASSTBACKEND\bin\Debug\net8.0\Microsoft.CodeAnalysis.Razor.dll
+C:\dev\NASST\NASST\NASSTBACKEND\bin\Debug\net8.0\RazorLight.dll
+C:\dev\NASST\NASST\NASSTBACKEND\bin\Debug\net8.0\IdentityModel.dll
+C:\dev\NASST\NASST\NASSTBACKEND\bin\Debug\net8.0\IdentityServer4.dll
+C:\dev\NASST\NASST\NASSTBACKEND\bin\Debug\net8.0\IdentityServer4.Storage.dll
+C:\dev\NASST\NASST\NASSTBACKEND\bin\Debug\net8.0\Microsoft.AspNetCore.Authentication.OpenIdConnect.dll
+C:\dev\NASST\NASST\NASSTBACKEND\bin\Debug\net8.0\Newtonsoft.Json.dll
+c:\dev\NASST\NASST\NASSTBACKEND\bin\Debug\net8.0\Microsoft.AspNetCore.Authentication.JwtBearer.dll

@@ -1,17 +1,17 @@
 {
   "format": 1,
   "restore": {
-    "C:\\dev\\NASST\\NASST\\NASSTBACKEND\\NASSTBACKEND.csproj": {}
+    "c:\\dev\\NASST\\NASST\\NASSTBACKEND\\NASSTBACKEND.csproj": {}
   },
   "projects": {
-    "C:\\dev\\NASST\\NASST\\NASSTBACKEND\\NASSTBACKEND.csproj": {
+    "c:\\dev\\NASST\\NASST\\NASSTBACKEND\\NASSTBACKEND.csproj": {
       "version": "1.0.0",
       "restore": {
-        "projectUniqueName": "C:\\dev\\NASST\\NASST\\NASSTBACKEND\\NASSTBACKEND.csproj",
+        "projectUniqueName": "c:\\dev\\NASST\\NASST\\NASSTBACKEND\\NASSTBACKEND.csproj",
         "projectName": "NASSTBACKEND",
-        "projectPath": "C:\\dev\\NASST\\NASST\\NASSTBACKEND\\NASSTBACKEND.csproj",
+        "projectPath": "c:\\dev\\NASST\\NASST\\NASSTBACKEND\\NASSTBACKEND.csproj",
         "packagesPath": "C:\\Users\\o.mneimneh\\.nuget\\packages\\",
-        "outputPath": "C:\\dev\\NASST\\NASST\\NASSTBACKEND\\obj\\",
+        "outputPath": "c:\\dev\\NASST\\NASST\\NASSTBACKEND\\obj\\",
         "projectStyle": "PackageReference",
         "configFilePaths": [
           "C:\\Users\\o.mneimneh\\AppData\\Roaming\\NuGet\\NuGet.Config",
@@ -46,6 +46,14 @@
         "net8.0": {
           "targetAlias": "net8.0",
           "dependencies": {
+            "IdentityServer4": {
+              "target": "Package",
+              "version": "[4.1.2, )"
+            },
+            "Microsoft.AspNetCore.Authentication.JwtBearer": {
+              "target": "Package",
+              "version": "[8.0.8, )"
+            },
             "Microsoft.AspNetCore.Identity.EntityFrameworkCore": {
               "target": "Package",
               "version": "[8.0.8, )"
@@ -63,6 +71,10 @@
               "suppressParent": "All",
               "target": "Package",
               "version": "[8.0.8, )"
+            },
+            "RazorLight": {
+              "target": "Package",
+              "version": "[2.3.1, )"
             },
             "Swashbuckle.AspNetCore": {
               "target": "Package",

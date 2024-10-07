@@ -11,6 +11,7 @@ namespace NASSTBACKEND.Data
         public virtual DbSet<User> Users => base.Users;
         public DbSet<Log> Logs { get; set; }
         public virtual DbSet<Role> Roles => base.Roles;
+        public virtual DbSet<UserRefreshToken> UserRefreshTokens { get; set; }
         public DbSet<IdentityUserRole<string>> UserRoleBase => Set<IdentityUserRole<string>>();
         public DbSet<IdentityUserToken<string>> UserTokenBase => Set<IdentityUserToken<string>>();
         public DbSet<IdentityUserLogin<string>> UserLoginBase => Set<IdentityUserLogin<string>>();
