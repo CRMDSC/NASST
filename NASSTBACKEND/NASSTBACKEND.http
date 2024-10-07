@@ -1,0 +1,6 @@
+@NASSTBACKEND_HostAddress = http://localhost:5028
+
+GET {{NASSTBACKEND_HostAddress}}/weatherforecast/
+Accept: application/json
+
+###
