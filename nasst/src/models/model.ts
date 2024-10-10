@@ -13,7 +13,7 @@ export interface Log {
 }
 
 // ..\NASSTBACKEND\Data\Entities\Role.cs
-export interface Role {
+export interface Role  {
     createdOn: Date;
     updatedOn?: Date;
     createdById?: string;
@@ -30,7 +30,7 @@ export enum Roles {
 }
 
 // ..\NASSTBACKEND\Data\Entities\User.cs
-export interface User {
+export interface User  {
     firstName?: string;
     lastName?: string;
     fullName?: string;
@@ -89,5 +89,23 @@ export interface LoginView {
     accessToken: string;
     accessTokenExpiresIn: number;
     refreshTokenExpiresIn: number;
-    firstLogin: boolean;
+}
+
+// ..\NASSTBACKEND\Data\ViewModels\Result.cs
+export interface Result<TPayload> {
+    payload: TPayload;
+    status: number;
+    errors: Error[];
+}
+
+// ..\NASSTBACKEND\Data\ViewModels\Result_.cs
+
+// ..\NASSTBACKEND\Data\ViewModels\UserView.cs
+export interface UserView {
+    userId: string;
+    fullName: string;
+    firstName: string;
+    lastName: string;
+    email: string;
+    role: string;
 }

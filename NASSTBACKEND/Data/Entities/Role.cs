@@ -6,7 +6,8 @@ namespace NASSTBACKEND.Data.Entities
     public enum Roles
     {
         User,
-        Admin
+        Admin,
+        Player
     }
 
     public class Role : IdentityRole

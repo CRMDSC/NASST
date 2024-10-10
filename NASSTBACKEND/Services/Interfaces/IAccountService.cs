@@ -9,5 +9,7 @@ namespace NASSTBACKEND.Services.Interfaces
         Task<Result<LoginView>> Login(LoginInput input, string ipAddress);
         Task<Result<User>> Register(RegisterInput input, User user);
         Task<Result<User>> Logout(User user, string ipAddress, string refreshToken = "");
+        Task<Result<LoginView>> RefreshToken(string token, string ipAddress);
+        Task<Result<UserView>> GetLoggedInUser (string userId);
     }
 }

@@ -45,6 +45,10 @@ namespace NASSTBACKEND.Data
             {
                 await roleManager.CreateAsync(new Role { Name = NASSTBACKEND.Data.Entities.Roles.Admin.ToString() });
             }
+              if (!await roleManager.RoleExistsAsync(NASSTBACKEND.Data.Entities.Roles.Player.ToString()))
+            {
+                await roleManager.CreateAsync(new Role { Name = NASSTBACKEND.Data.Entities.Roles.Player.ToString() });
+            }
 
         }
 

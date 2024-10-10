@@ -1,0 +1,17 @@
+{
+    "include": [
+      "../NASSTBACKEND/Data/**/*.cs"
+    ],
+    "namespace": null,
+    "exclude": ["../NASSTBACKEND/Data/View Models/Result_.cs", "../NASSTBACKEND/Data/DBContext.cs"], 
+    "output": "./src/models/model.ts",
+    "camelCase": true,
+    "camelCaseEnums": false,
+    "numericEnums": false,
+    "stringLiteralTypesInsteadOfEnums": false,
+    "customTypeTranslations": {
+      "IFormFile": "File | null",
+      "TimeSpan": "string",
+      "DateTime": "Date"
+    }
+  }

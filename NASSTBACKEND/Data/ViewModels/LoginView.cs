@@ -10,6 +10,5 @@ namespace NASSTBACKEND.Data.ViewModels
         [JsonIgnore] public string RefreshToken { get; set; }
         [DataMember] public int AccessTokenExpiresIn { get; set; }
         [DataMember] public int RefreshTokenExpiresIn { get; set; }
-        [DataMember] public bool FirstLogin { get; set; }
     }
 }

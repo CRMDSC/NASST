@@ -48,7 +48,6 @@ namespace NASSTBACKEND.Services.General
                 return Result.BadRequest<LoginView>().With(Error.IncorrectPassword());
             }
 
-            bool firstLogin = !context.UserRefreshTokens.Any(r => r.UserId == user.Id);
 
             var token = await GenerateJwtTokenAsync(user);
             var refreshToken = await GenerateRefreshToken(user, ipAddress);
@@ -66,7 +65,6 @@ namespace NASSTBACKEND.Services.General
                 AccessTokenExpiresIn = (int)(token.ValidTo - DateTime.UtcNow).TotalSeconds,
                 RefreshTokenExpiresIn = refreshToken.Expires != null ? (int)((DateTime)refreshToken.Expires - DateTime.UtcNow).TotalDays + 1 : -1,
                 RefreshToken = refreshToken.Token,
-                FirstLogin = firstLogin,
             };
         }
 
@@ -114,7 +112,6 @@ namespace NASSTBACKEND.Services.General
                 AccessTokenExpiresIn = (int)(jwtToken.ValidTo - DateTime.UtcNow).TotalSeconds,
                 RefreshTokenExpiresIn = newRefreshToken.Expires != null ? (int)((DateTime)newRefreshToken.Expires - DateTime.UtcNow).TotalDays + 1 : -1,
                 RefreshToken = newRefreshToken.Token,
-                FirstLogin = false,
             };
         }
 
@@ -193,6 +190,7 @@ namespace NASSTBACKEND.Services.General
                 return Result.Conflict<User>().With(Error.InvalidParameter(createUser.Errors.FirstOrDefault().Description.ToString()));
             }
             //include sending emails when regsitering
+            await userManager.AddToRoleAsync(newUser, input.Role);
             await context.SaveChangesAsync();
             return newUser;
         }
@@ -233,6 +231,24 @@ namespace NASSTBACKEND.Services.General
             {
                 return Result.NotFound<User>().With(Error.NotFound("User not found", user.UserName));
             }
+        }
+
+        public async Task<Result<UserView>> GetLoggedInUser(string userId)
+        {
+            var user = await context.Users.Where(u => u.Id == userId && u.IsArchived == false).FirstOrDefaultAsync();
+            var userRole = await context.UserRoles.Where(u => u.UserId == userId).FirstOrDefaultAsync();
+            var role = await context.Roles.Where(r => r.Id == userRole.RoleId).FirstOrDefaultAsync();
+
+            var userview = new UserView
+            {
+                userId = user.Id,
+                Email = user.Email,
+                FullName = user.FullName,
+                FirstName = user.FirstName,
+                LastName = user.LastName,
+                role = role.Name
+            };
+            return userview;
         }
     }
 }
