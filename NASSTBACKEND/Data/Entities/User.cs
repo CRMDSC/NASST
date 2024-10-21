@@ -14,8 +14,10 @@ namespace NASSTBACKEND.Data.Entities
         public string? FCMToken { get; set; }
         public bool IsArchived { get; set; }
         public string? CreatedById { get; set; }
-        public User CreatedBy { get; set; }
+        public User? CreatedBy { get; set; }
         public string? UpdatedById { get; set; }
-        public User UpdatedBy { get; set; }
+        public User? UpdatedBy { get; set; }
+        public int? CategoryId { get; set; }
+        public Category? Category { get; set; }
     }
 }

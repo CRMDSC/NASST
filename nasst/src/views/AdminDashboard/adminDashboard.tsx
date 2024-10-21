@@ -4,7 +4,6 @@ import Tab from '@mui/material/Tab';
 import Box from '@mui/material/Box';
 import Button from '@mui/material/Button';
 import Divider from '@mui/material/Divider';
-import { useNavigate } from 'react-router-dom';
 import Teams from '../Teams/TeamPage';
 import SportsTypes from '../SportTypes/sportTypesPage';
 import Players from '../Players/PlayersPage';

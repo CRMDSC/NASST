@@ -1,11 +1,12 @@
 import React, { FormEvent } from "react";
-import { Navigate } from "react-router-dom";
 import { inject } from "mobx-react";
 import { UserStore } from "../../store/user";
 import { LoginInput } from "../../models/model";
-import { Box, Button, TextField, Typography, Container, Grid, Paper, Avatar, InputAdornment, IconButton } from '@mui/material';
+import { Box, Button, TextField, Typography, Container, Paper, Avatar, InputAdornment, IconButton } from '@mui/material';
 import LockOutlinedIcon from '@mui/icons-material/LockOutlined';
-import { Link } from 'react-router-dom';
+import Link from 'next/link';
+import { withRouter } from 'next/router';
+import { WithRouterProps } from "next/dist/client/with-router";
 
 
 interface ILoginState {
@@ -21,12 +22,14 @@ interface ILoginState {
     error: boolean;
 }
 
-type Props = Readonly<{ user?: UserStore; }>;
+interface LoginProps extends WithRouterProps {
+    user?: UserStore;
+  }
 
 @inject("user")
-class Login extends React.Component<Props, ILoginState> {
+class Login extends React.Component<LoginProps, ILoginState> {
 
-    constructor(props: Props) {
+    constructor(props: LoginProps) {
         super(props);
         this.state = {
             showPass: false,
@@ -48,16 +51,25 @@ class Login extends React.Component<Props, ILoginState> {
     };
 
     submit = async (e: FormEvent) => {
-        e.preventDefault()
-        this.setState({ loading: true })
-        var firstLogin = false;
+        e.preventDefault();
+        this.setState({ loading: true });
+        let firstLogin = false;
+    
         try {
-            console.log("LOGIN")
-            var loginResponse = await this.props.user?.login({
+            console.log("LOGIN");
+            const loginResponse = await this.props.user?.login({
                 email: this.state.email,
                 password: this.state.password,
                 fcmToken: ""
             } as LoginInput);
+    
+            // Check if login was successful
+            if (this.props.user?.isLoggedIn) {
+                firstLogin = true; // Set this if needed for your logic
+                if (this.props.user?.role === "Admin") {
+                    this.props.router.push('/AdminDashboard'); // Redirect after login
+                }
+            }
         } catch (data: any) {
             const errors = data.errors as any[];
             if (errors) {
@@ -68,16 +80,11 @@ class Login extends React.Component<Props, ILoginState> {
                 });
             }
         }
+    
         this.setState({ hasLoggedIn: this.props.user?.isLoggedIn || false, firstLogin, loading: false });
     };
-
+    
     render() {
-        if (this.props.user?.isLoggedIn) {
-            if(this.props.user?.role == "Admin")
-            return <Navigate to={`/AdminDashboard`} />;
-
-        }
-
         return (
             <div>
                 <Container component="main" maxWidth="xs" sx={{ height: '100vh', display: 'flex', justifyContent: 'center', alignItems: 'center' }}>
@@ -122,12 +129,12 @@ class Login extends React.Component<Props, ILoginState> {
                                 Sign In
                             </Button>
                             <div style={{ width: '100%', marginTop: '20px', justifyContent: 'space-between', alignItems: 'center' }}>
-                                <Link to="/reset-password" style={{ textDecoration: 'none', color: '#1976d2' }}>
+                             <Link href="/ForgotPassword" style={{ textDecoration: 'none', color: '#1976d2' }}>
                                     <Typography variant="body2">Forgot password?</Typography>
                                 </Link>
-                                <Link to="/signUp" style={{ textDecoration: 'none', color: '#1976d2' }}>
+                                <Link href="/Register" style={{ textDecoration: 'none', color: '#1976d2' }}>
                                     <Typography variant="body2">Don't have an account? Register</Typography>
-                                </Link>
+                                </Link> 
                             </div>
                         </Box>
                     </Paper>
@@ -137,4 +144,4 @@ class Login extends React.Component<Props, ILoginState> {
         );
     }
 }
-export default (Login);
+export default withRouter(Login);

@@ -17,4 +17,5 @@ export class RootStore {
     
 }
 
-export default (window as any).root = new RootStore()
+const rootStore = new RootStore();
+export default rootStore;

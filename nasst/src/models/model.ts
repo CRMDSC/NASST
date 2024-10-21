@@ -1,3 +1,10 @@
+// ..\NASSTBACKEND\Data\Entities\Category.cs
+export interface Category {
+    id: number;
+    name: string;
+    isArchived: boolean;
+}
+
 // ..\NASSTBACKEND\Data\Entities\Log.cs
 export interface Log {
     id: number;
@@ -13,7 +20,7 @@ export interface Log {
 }
 
 // ..\NASSTBACKEND\Data\Entities\Role.cs
-export interface Role{
+export interface Role {
     createdOn: Date;
     updatedOn?: Date;
     createdById?: string;
@@ -44,7 +51,7 @@ export interface SportType {
 }
 
 // ..\NASSTBACKEND\Data\Entities\User.cs
-export interface User{
+export interface User {
     firstName?: string;
     lastName?: string;
     fullName?: string;
@@ -53,9 +60,11 @@ export interface User{
     fcmToken?: string;
     isArchived: boolean;
     createdById?: string;
-    createdBy: User;
+    createdBy?: User;
     updatedById?: string;
-    updatedBy: User;
+    updatedBy?: User;
+    categoryId?: number;
+    category?: Category;
 }
 
 // ..\NASSTBACKEND\Data\Entities\UserRefreshToken.cs
