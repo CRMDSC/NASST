@@ -9,7 +9,8 @@ namespace NASSTBACKEND.Data
         public NASSTContext(DbContextOptions<NASSTContext> options) : base(options) { }
 
         public virtual DbSet<User> Users => base.Users;
-        public DbSet<Log> Logs { get; set; }
+        public virtual DbSet<Log> Logs { get; set; }
+        public virtual DbSet<SportType> SportTypes { get; set; }
         public virtual DbSet<Role> Roles => base.Roles;
         public virtual DbSet<UserRefreshToken> UserRefreshTokens { get; set; }
         public DbSet<IdentityUserRole<string>> UserRoleBase => Set<IdentityUserRole<string>>();

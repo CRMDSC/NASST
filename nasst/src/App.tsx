@@ -19,7 +19,8 @@ function App() {
   return (
     <Provider root={store} user={store.user} token={store.token}>
     <MaterialUIProvider theme={muiTheme}>
-      <Router>
+      <LoginPage />
+      {/* <Router>
         <Routes>
           <Route path="/" element={<LoginPage />} />
           <Route path="/SignUp" element={<RegisterPage />} />
@@ -28,7 +29,7 @@ function App() {
           <Route path="/adminDashboard/players" element={<Players/>} />
           <Route path="/adminDashboard/sportsTypes" element={<SportsTypes/>} />
         </Routes>
-      </Router>
+      </Router> */}
     </MaterialUIProvider>
     </Provider>
   );

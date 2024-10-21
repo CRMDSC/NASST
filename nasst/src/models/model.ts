@@ -13,7 +13,7 @@ export interface Log {
 }
 
 // ..\NASSTBACKEND\Data\Entities\Role.cs
-export interface Role  {
+export interface Role{
     createdOn: Date;
     updatedOn?: Date;
     createdById?: string;
@@ -27,10 +27,24 @@ export interface Role  {
 export enum Roles {
     User = 'User',
     Admin = 'Admin',
+    Player = 'Player',
+}
+
+// ..\NASSTBACKEND\Data\Entities\SportType.cs
+export interface SportType {
+    id: number;
+    name: string;
+    playersCount: number;
+    teamsCount: number;
+    isArchived: boolean;
+    createdById?: string;
+    createdBy: User;
+    updatedById?: string;
+    updatedBy: User;
 }
 
 // ..\NASSTBACKEND\Data\Entities\User.cs
-export interface User  {
+export interface User{
     firstName?: string;
     lastName?: string;
     fullName?: string;
@@ -76,6 +90,21 @@ export interface RegisterInput {
     role: string;
 }
 
+// ..\NASSTBACKEND\Data\InputModels\SportTypeInput.cs
+export interface SportTypeInput {
+    name: string;
+    playersCount: number;
+    teamsCount: number;
+}
+
+// ..\NASSTBACKEND\Data\InputModels\UpdateSportTypeInput.cs
+export interface UpdateSportTypeInput {
+    id: number;
+    name: string;
+    playersCount: number;
+    teamsCount: number;
+}
+
 // ..\NASSTBACKEND\Data\ViewModels\ErrorView.cs
 export interface Error {
     code: string;
@@ -98,7 +127,13 @@ export interface Result<TPayload> {
     errors: Error[];
 }
 
-// ..\NASSTBACKEND\Data\ViewModels\Result_.cs
+// ..\NASSTBACKEND\Data\ViewModels\SportTypeView.cs
+export interface SportTypeView {
+    id: number;
+    name: string;
+    playersCount: number;
+    teamsCount: number;
+}
 
 // ..\NASSTBACKEND\Data\ViewModels\UserView.cs
 export interface UserView {

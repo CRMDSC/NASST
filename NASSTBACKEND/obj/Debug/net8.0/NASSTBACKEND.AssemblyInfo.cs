@@ -13,7 +13,7 @@ using System.Reflection;
 [assembly: System.Reflection.AssemblyCompanyAttribute("NASSTBACKEND")]
 [assembly: System.Reflection.AssemblyConfigurationAttribute("Debug")]
 [assembly: System.Reflection.AssemblyFileVersionAttribute("1.0.0.0")]
-[assembly: System.Reflection.AssemblyInformationalVersionAttribute("1.0.0+aa0fbaa53a70efaf3e808a465235a075febe7c8e")]
+[assembly: System.Reflection.AssemblyInformationalVersionAttribute("1.0.0+334ed341bc537d773b6ceba513b40567da3ae6d8")]
 [assembly: System.Reflection.AssemblyProductAttribute("NASSTBACKEND")]
 [assembly: System.Reflection.AssemblyTitleAttribute("NASSTBACKEND")]
 [assembly: System.Reflection.AssemblyVersionAttribute("1.0.0.0")]

@@ -133,6 +133,7 @@ options.AddSecurityRequirement(new OpenApiSecurityRequirement
 
 
 builder.Services.AddScoped<IAccountService, AccountService>();
+builder.Services.AddScoped<ISportTypeService, SportTypeService>();
 
 
 var app = builder.Build();

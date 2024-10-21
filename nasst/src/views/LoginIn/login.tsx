@@ -82,7 +82,7 @@ class Login extends React.Component<Props, ILoginState> {
             <div>
                 <Container component="main" maxWidth="xs" sx={{ height: '100vh', display: 'flex', justifyContent: 'center', alignItems: 'center' }}>
                     <Paper elevation={6} sx={{ padding: 4, borderRadius: 4, backgroundColor: '#fff', width: '100%', display: 'flex', flexDirection: 'column', alignItems: 'center' }}>
-                        <Avatar sx={{ m: 1, bgcolor: '#8FC6DC' }}> <LockOutlinedIcon /> </Avatar>
+                        <Avatar sx={{ m: 1, bgcolor: 'rgb(91, 139, 197)' }}> <LockOutlinedIcon /> </Avatar>
                         <Typography component="h1" variant="h5"> Sign in </Typography>
                         <Box component="form" noValidate sx={{ mt: 1 }}>
                             {this.state.error ?
@@ -118,7 +118,7 @@ class Login extends React.Component<Props, ILoginState> {
                                 type="submit"
                                 fullWidth
                                 variant="contained"
-                                sx={{ fontSize: "17px", mt: 3, mb: 2, backgroundColor: '#8FC6DC', color: "white", '&:hover': { backgroundColor: '#6ba9bf' }, }}>
+                                sx={{ fontSize: "17px", mt: 3, mb: 2, color: "white", '&:hover': { backgroundColor: '#6ba9bf' }, }}>
                                 Sign In
                             </Button>
                             <div style={{ width: '100%', marginTop: '20px', justifyContent: 'space-between', alignItems: 'center' }}>

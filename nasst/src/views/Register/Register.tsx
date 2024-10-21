@@ -62,7 +62,7 @@ const RegisterPage = () => {
     return (
         <Container component="main" maxWidth="xs" sx={{ height: '100vh', display: 'flex', justifyContent: 'center', alignItems: 'center' }}>
             <Paper elevation={6} sx={{ padding: 4, borderRadius: 4, backgroundColor: '#fff', width: '100%', display: 'flex', flexDirection: 'column', alignItems: 'center' }}>
-                <Avatar sx={{ m: 1, bgcolor: '#8FC6DC' }}>
+                <Avatar sx={{ m: 1, bgcolor: 'rgb(91, 139, 197)' }}>
                     <LockOutlinedIcon />
                 </Avatar>
                 <Typography component="h1" variant="h5"> Register </Typography>
@@ -137,7 +137,7 @@ const RegisterPage = () => {
                         type="submit"
                         fullWidth
                         variant="contained"
-                        sx={{ fontSize: "17px", mt: 3, mb: 2, backgroundColor: '#8FC6DC', color: "white", '&:hover': { backgroundColor: '#6ba9bf' } }}
+                        sx={{ fontSize: "17px", mt: 3, mb: 2, color: "white", '&:hover': { backgroundColor: '#6ba9bf' } }}
                         onClick={signUp}
                     >
                         Register
