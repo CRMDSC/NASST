@@ -17,7 +17,5 @@ namespace NASSTBACKEND.Data.Entities
         public User? CreatedBy { get; set; }
         public string? UpdatedById { get; set; }
         public User? UpdatedBy { get; set; }
-        public int? CategoryId { get; set; }
-        public Category? Category { get; set; }
     }
 }

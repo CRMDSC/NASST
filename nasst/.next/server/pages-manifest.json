@@ -2,7 +2,8 @@
   "/_app": "pages/_app.js",
   "/_error": "pages/_error.js",
   "/_document": "pages/_document.js",
-  "/": "pages/index.js",
   "/AdminDashboard": "pages/AdminDashboard.js",
-  "/ForgotPassword": "pages/ForgotPassword.js"
+  "/": "pages/index.js",
+  "/ForgotPassword": "pages/ForgotPassword.js",
+  "/Register": "pages/Register.js"
 }

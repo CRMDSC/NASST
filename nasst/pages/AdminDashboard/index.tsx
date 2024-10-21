@@ -56,9 +56,9 @@ const AdminDashboard = inject('user')(observer(({ user }: Props) => {
                         aria-label="scrollable force tabs example"
                     >
                         <Tab label="Categories" />
+                        <Tab label="Players" />
                         <Tab label="Sport Types" />
                         <Tab label="Teams" />
-                        <Tab label="Players" />
                     </Tabs>
                 </Box>
                 <Button
@@ -75,11 +75,11 @@ const AdminDashboard = inject('user')(observer(({ user }: Props) => {
                 <div style={{ backgroundColor : '#f9f9f9', height:"100vh"}}>   <Cateories/></div>
              
             ) : value === 1 ? (
-                <SportsTypes />
+                <div style={{ backgroundColor : '#f9f9f9', height:"100vh"}}> <Players /></div>
             )  : value === 2 ? (
-                <Teams />
+                <SportsTypes />
             ) : (
-                <Players />
+                <Teams />
             )}
         </Box>
     );

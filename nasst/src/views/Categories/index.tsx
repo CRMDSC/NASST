@@ -146,7 +146,7 @@ const Categories = () => {
 
     return (
         <Box sx={{ padding: 3, display: 'flex', flexDirection: 'row', width: '100%' }}>
-            <Box sx={{ padding: 3, display: 'flex', flexDirection: 'column', flexGrow: 1 }}>
+            <Box sx={{ padding: 3, display: 'flex', flexDirection: 'column', flexGrow: 3 }}>
                 <Dialog
                     open={openDelete}
                     TransitionComponent={Transition}
@@ -244,7 +244,7 @@ const Categories = () => {
                 }
             </Box>
             <Divider orientation="vertical" flexItem sx={{ margin: 2 }} /> {/* Vertical Divider */}
-            <Box sx={{ padding: 5, display: 'flex', flexDirection: 'column', flexGrow: 0.5 }}>
+            <Box sx={{ padding: 5, display: 'flex', flexDirection: 'column', flexGrow: 0.25 }}>
                 <Box sx={{ display: 'flex', flexDirection: 'column', marginBottom: 2, gap: "16px" }}>
                     <Typography sx={{ color: 'rgba(91, 139, 197)', fontSize: "15px" }}>ADD NEW CATEGORY</Typography>
                     <Box sx={{ display: "flex", gap: "12px" }}>

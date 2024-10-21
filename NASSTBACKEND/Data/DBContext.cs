@@ -12,6 +12,7 @@ namespace NASSTBACKEND.Data
         public virtual DbSet<Log> Logs { get; set; }
         public virtual DbSet<SportType> SportTypes { get; set; }
         public virtual DbSet<Category> Category { get; set; }
+        public virtual DbSet<Player> Players { get; set; }
         public virtual DbSet<Role> Roles => base.Roles;
         public virtual DbSet<UserRefreshToken> UserRefreshTokens { get; set; }
         public DbSet<IdentityUserRole<string>> UserRoleBase => Set<IdentityUserRole<string>>();
@@ -45,10 +46,6 @@ namespace NASSTBACKEND.Data
             if (!await roleManager.RoleExistsAsync(NASSTBACKEND.Data.Entities.Roles.Admin.ToString()))
             {
                 await roleManager.CreateAsync(new Role { Name = NASSTBACKEND.Data.Entities.Roles.Admin.ToString() });
-            }
-            if (!await roleManager.RoleExistsAsync(NASSTBACKEND.Data.Entities.Roles.Player.ToString()))
-            {
-                await roleManager.CreateAsync(new Role { Name = NASSTBACKEND.Data.Entities.Roles.Player.ToString() });
             }
 
         }

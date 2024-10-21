@@ -22,6 +22,16 @@
       "static/chunks/main.js",
       "static/chunks/pages/AdminDashboard.js"
     ],
+    "/ForgotPassword": [
+      "static/chunks/webpack.js",
+      "static/chunks/main.js",
+      "static/chunks/pages/ForgotPassword.js"
+    ],
+    "/Register": [
+      "static/chunks/webpack.js",
+      "static/chunks/main.js",
+      "static/chunks/pages/Register.js"
+    ],
     "/_app": [
       "static/chunks/webpack.js",
       "static/chunks/main.js",

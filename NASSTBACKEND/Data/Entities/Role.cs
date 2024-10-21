@@ -7,7 +7,6 @@ namespace NASSTBACKEND.Data.Entities
     {
         User,
         Admin,
-        Player
     }
 
     public class Role : IdentityRole
