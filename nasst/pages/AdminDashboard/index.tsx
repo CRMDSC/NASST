@@ -7,7 +7,9 @@ import Divider from '@mui/material/Divider';
 import Teams from '../../src/views/Teams/TeamPage';
 import SportsTypes from '../../src/views/SportTypes/sportTypesPage';
 import Players from '../../src/views/Players/PlayersPage';
+import Information from '../../src/views/AdditionalInformation/index';
 import Cateories from '../../src/views/Categories/index';
+import Documents from '../../src/views/Documents/index'
 import { inject, observer } from 'mobx-react';
 import { UserStore } from '../../src/store/user';
 import { useRouter } from 'next/router';
@@ -56,6 +58,8 @@ const AdminDashboard = inject('user')(observer(({ user }: Props) => {
                         aria-label="scrollable force tabs example"
                     >
                         <Tab label="Categories" />
+                        <Tab label="Document Types" />
+                        <Tab label="Additional Information" />
                         <Tab label="Players" />
                         <Tab label="Sport Types" />
                         <Tab label="Teams" />
@@ -75,8 +79,12 @@ const AdminDashboard = inject('user')(observer(({ user }: Props) => {
                 <div style={{ backgroundColor : '#f9f9f9', height:"100vh"}}>   <Cateories/></div>
              
             ) : value === 1 ? (
-                <div style={{ backgroundColor : '#f9f9f9', height:"100vh"}}> <Players /></div>
+                <div style={{ backgroundColor : '#f9f9f9', height:"100vh"}}> <Documents /></div>
             )  : value === 2 ? (
+                <div style={{ backgroundColor : '#f9f9f9', height:"100vh"}}> <Information /></div>
+            ) : value === 3 ? (
+                <div style={{ backgroundColor : '#f9f9f9', height:"100vh"}}> <Players /></div>
+            ) :value === 4 ? (
                 <SportsTypes />
             ) : (
                 <Teams />

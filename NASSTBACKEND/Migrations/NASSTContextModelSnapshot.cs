@@ -128,6 +128,26 @@ namespace NASSTBACKEND.Migrations
                     b.ToTable("AspNetUserTokens", (string)null);
                 });
 
+            modelBuilder.Entity("NASSTBACKEND.Data.Entities.AdditionalInformation", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int");
+
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
+
+                    b.Property<bool>("IsArchived")
+                        .HasColumnType("bit");
+
+                    b.Property<string>("Name")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.HasKey("Id");
+
+                    b.ToTable("AdditionalInformation");
+                });
+
             modelBuilder.Entity("NASSTBACKEND.Data.Entities.Category", b =>
                 {
                     b.Property<int>("Id")
@@ -145,7 +165,27 @@ namespace NASSTBACKEND.Migrations
 
                     b.HasKey("Id");
 
-                    b.ToTable("Category", (string)null);
+                    b.ToTable("Category");
+                });
+
+            modelBuilder.Entity("NASSTBACKEND.Data.Entities.DocumentType", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int");
+
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
+
+                    b.Property<bool>("IsArchived")
+                        .HasColumnType("bit");
+
+                    b.Property<string>("Type")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.HasKey("Id");
+
+                    b.ToTable("DocumentTypes");
                 });
 
             modelBuilder.Entity("NASSTBACKEND.Data.Entities.Log", b =>
@@ -187,7 +227,7 @@ namespace NASSTBACKEND.Migrations
 
                     b.HasIndex("CreatedByUserId");
 
-                    b.ToTable("Logs", (string)null);
+                    b.ToTable("Logs");
                 });
 
             modelBuilder.Entity("NASSTBACKEND.Data.Entities.Player", b =>
@@ -239,7 +279,7 @@ namespace NASSTBACKEND.Migrations
 
                     b.HasIndex("UpdatedById");
 
-                    b.ToTable("Players", (string)null);
+                    b.ToTable("Players");
                 });
 
             modelBuilder.Entity("NASSTBACKEND.Data.Entities.Role", b =>
@@ -321,7 +361,7 @@ namespace NASSTBACKEND.Migrations
 
                     b.HasIndex("UpdatedById");
 
-                    b.ToTable("SportTypes", (string)null);
+                    b.ToTable("SportTypes");
                 });
 
             modelBuilder.Entity("NASSTBACKEND.Data.Entities.User", b =>
@@ -462,7 +502,7 @@ namespace NASSTBACKEND.Migrations
 
                     b.HasIndex("UserId");
 
-                    b.ToTable("UserRefreshTokens", (string)null);
+                    b.ToTable("UserRefreshTokens");
                 });
 
             modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityRoleClaim<string>", b =>

@@ -1,7 +1,21 @@
+// ..\NASSTBACKEND\Data\Entities\AdditionalInformation.cs
+export interface AdditionalInformation {
+    id: number;
+    name: string;
+    isArchived: boolean;
+}
+
 // ..\NASSTBACKEND\Data\Entities\Category.cs
 export interface Category {
     id: number;
     name: string;
+    isArchived: boolean;
+}
+
+// ..\NASSTBACKEND\Data\Entities\DocumentType.cs
+export interface DocumentType {
+    id: number;
+    type: string;
     isArchived: boolean;
 }
 
@@ -38,7 +52,7 @@ export interface Player {
 }
 
 // ..\NASSTBACKEND\Data\Entities\Role.cs
-export interface Role {
+export interface Role  {
     createdOn: Date;
     updatedOn?: Date;
     createdById?: string;

@@ -1,6 +1,6 @@
 import * as React from 'react';
 import { Alert, Box, Button, Divider, IconButton, Table, TableBody, TableCell, TableContainer, TableHead, TableRow, TextField, Typography } from '@mui/material';
-import { Add, Edit, Delete, Visibility, CategorySharp } from '@mui/icons-material';
+import {Edit, Delete } from '@mui/icons-material';
 import CircularProgress from '@mui/material/CircularProgress';
 import { useEffect, useState } from 'react';
 import { Category } from '../../models/model';
@@ -37,6 +37,9 @@ const Categories = () => {
     const [editId, setEditId] = useState(0)
     const [editName, setEditName] = useState("")
     const [openEdit, setOpenEdit] = useState(false)
+    const [formExpanded, setFormExpanded] = useState(false);
+    const [editFormExpanded, setEditFormExpanded] = useState(false);
+
 
     const handleClickOpen = (id: number) => {
         setDeleteId(id)
@@ -46,6 +49,14 @@ const Categories = () => {
         setEditId(id)
         setEditName(name)
         setOpenEdit(true)
+    };
+    const toggleForm = () => {
+        setFormExpanded(!formExpanded);
+    };
+    const toggleEditForm = (input: Category) => {
+        setEditId(input.id)
+        setEditName(input.name)
+        setEditFormExpanded(!editFormExpanded);
     };
     const handleClose = () => {
         setOpenDelete(false);
@@ -111,6 +122,7 @@ const Categories = () => {
             await editCategory(category)
             fetchData()
             setOpenEdit(false)
+            setEditFormExpanded(false)
             setLoader(false)
             setSuccessMessage("Category edited successfully!")
             setSuccess(true)
@@ -165,34 +177,6 @@ const Categories = () => {
                         <Button onClick={handleClose}>Close</Button>
                     </DialogActions>
                 </Dialog>
-                <Dialog
-                    open={openEdit}
-                    TransitionComponent={Transition}
-                    keepMounted
-                    onClose={handleEditClose}
-                    aria-describedby="alert-dialog-slide-description"
-
-                >
-                    <DialogTitle>{"Edit Category"}</DialogTitle>
-                    <DialogContent>
-                        <DialogContentText id="alert-dialog-slide-description">
-                            Change the category name
-                        </DialogContentText>
-                        <br />
-                        <TextField
-                            variant="outlined"
-                            placeholder="Filter by name"
-                            value={editName}
-                            size='small'
-                            onChange={(e) => setEditName(e.target.value)}
-                            sx={{ width: '300px', backgroundColor: 'white' }}
-                        />
-                    </DialogContent>
-                    <DialogActions>
-                        <Button onClick={handleEdit}>Edit</Button>
-                        <Button onClick={handleEditClose}>Close</Button>
-                    </DialogActions>
-                </Dialog>
                 <Box sx={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: 2 }}>
                     <TextField
                         variant="outlined"
@@ -202,6 +186,9 @@ const Categories = () => {
                         onChange={(e) => setFilter(e.target.value)}
                         sx={{ width: '200px', backgroundColor: 'white' }} // White background for the input
                     />
+                    <Button onClick={toggleForm} variant="outlined">
+                        {formExpanded ? 'Close' : 'New Category'}
+                    </Button>
                 </Box>
                 {loader == true ?
                     <CircularProgress />
@@ -229,7 +216,7 @@ const Categories = () => {
                                             <TableCell>{cat.id}</TableCell>
                                             <TableCell>{cat.name}</TableCell>
                                             <TableCell>
-                                                <IconButton onClick={() => handleEditOpen(cat.id, cat.name)}>
+                                                <IconButton onClick={() =>{ toggleEditForm(cat) }}>
                                                     <Edit />
                                                 </IconButton>
                                                 <IconButton onClick={() => handleClickOpen(cat.id)}>
@@ -243,30 +230,80 @@ const Categories = () => {
                         </TableContainer></>
                 }
             </Box>
-            <Divider orientation="vertical" flexItem sx={{ margin: 2 }} /> {/* Vertical Divider */}
-            <Box sx={{ padding: 5, display: 'flex', flexDirection: 'column', flexGrow: 0.25 }}>
-                <Box sx={{ display: 'flex', flexDirection: 'column', marginBottom: 2, gap: "16px" }}>
-                    <Typography sx={{ color: 'rgba(91, 139, 197)', fontSize: "15px" }}>ADD NEW CATEGORY</Typography>
-                    <Box sx={{ display: "flex", gap: "12px" }}>
-                        <TextField
-                            variant="outlined"
-                            placeholder="Category Name"
-                            value={newCategoryName}
-                            size='small'
-                            onChange={(e) => setNewCategoryName(e.target.value)}
-                            sx={{ width: '250px', backgroundColor: 'white' }} // White background for the input
-                        />
-                        <Button
-                            variant="contained"
-                            color="primary"
-                            onClick={handleAddCategory}
-                            sx={{ color: "white", width: "150px" }}
-                        >
-                            Add Category
-                        </Button>
+            {formExpanded && (
+                <>
+                    <Divider orientation="vertical" flexItem sx={{ margin: 2 }} />
+                    <Box sx={{
+                        padding: 5, display: 'flex',
+                        flexDirection: 'column',
+                        transition: 'width 0.5s ease',
+                        width: formExpanded ? '300px' : '0px',
+                        overflow: 'hidden',
+                        backgroundColor: 'rgba(91, 139, 197, 0.1)',
+                        borderRadius: "15px",
+                        marginRight: "40px",
+                        alignItems: "center",
+                    }}>
+                      <Box sx={{ display: 'flex', flexDirection: 'column', gap: '18px', marginTop: 6, alignItems:"center" }}>
+                            <Typography sx={{ color: 'rgba(91, 139, 197)', fontSize: "15px" }}>ADD NEW CATEGORY</Typography>
+                      
+                                <TextField
+                                    variant="outlined"
+                                    placeholder="Category Name"
+                                    value={newCategoryName}
+                                    size='small'
+                                    onChange={(e) => setNewCategoryName(e.target.value)}
+                                    sx={{ width: '250px', backgroundColor: 'white' }} // White background for the input
+                                />
+                                <Button
+                                    variant="contained"
+                                    color="primary"
+                                    onClick={handleAddCategory}
+                                    sx={{ color: "white", width: "150px" }}
+                                >
+                                    Add
+                                </Button>
+                            </Box>
                     </Box>
-                </Box>
-            </Box>
+                </>
+            )}
+             {editFormExpanded && (
+                <>
+                    <Divider orientation="vertical" flexItem sx={{ margin: 2 }} /> {/* Vertical Divider */}
+                    <Box sx={{
+                        padding: 5, display: 'flex',
+                        flexDirection: 'column',
+                        transition: 'width 0.5s ease',
+                        width: editFormExpanded ? '300px' : '0px',
+                        overflow: 'hidden',
+                        backgroundColor: 'rgba(91, 139, 197, 0.1)',
+                        borderRadius: "15px",
+                        marginRight: "40px",
+                        alignItems: "center",
+                    }}>
+                      <Box sx={{ display: 'flex', flexDirection: 'column', gap: '18px', marginTop: 6, alignItems:"center" }}>
+                            <Typography sx={{ color: 'rgba(91, 139, 197)', fontSize: "15px" }}>ADD NEW CATEGORY</Typography>
+                      
+                                <TextField
+                                    variant="outlined"
+                                    placeholder="Category Name"
+                                    value={editName}
+                                    size='small'
+                                    onChange={(e) => setEditName(e.target.value)}
+                                    sx={{ width: '250px', backgroundColor: 'white' }} // White background for the input
+                                />
+                                <Button
+                                    variant="contained"
+                                    color="primary"
+                                    onClick={handleEdit}
+                                    sx={{ color: "white", width: "150px" }}
+                                >
+                                    SAVE
+                                </Button>
+                            </Box>
+                    </Box>
+                </>
+            )}
         </Box>
     );
 };

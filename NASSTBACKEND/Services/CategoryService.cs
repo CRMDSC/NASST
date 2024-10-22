@@ -1,14 +1,10 @@
-using Microsoft.AspNetCore.Identity;
-using Microsoft.Extensions.Options;
-using Microsoft.IdentityModel.Tokens;
-using System.IdentityModel.Tokens.Jwt;
 using Microsoft.EntityFrameworkCore;
 using NASSTBACKEND.Services.Interfaces;
 using NASSTBACKEND.Data.ViewModels;
-using NASSTBACKEND.Data.InputModels;
 using NASSTBACKEND.Data.Entities;
 using NASSTBACKEND.Data;
-using NASSTBACKEND.Options;
+using Microsoft.AspNetCore.Components.Web;
+
 
 namespace NASSTBACKEND.Services.General
 {
@@ -23,7 +19,7 @@ namespace NASSTBACKEND.Services.General
 
         public async Task<Result<Category>> AddCategory(Category input)
         {
-            var categories = await context.Category.ToListAsync();
+            var categories = await context.Category.Where(c => c.IsArchived == false).ToListAsync();
             if (input.Name == null || input.Name == "")
             {
                 return Result.BadRequest<Category>().With(Error.InvalidParameter("Category name cannot be null"));

@@ -136,6 +136,8 @@ builder.Services.AddScoped<IAccountService, AccountService>();
 builder.Services.AddScoped<ISportTypeService, SportTypeService>();
 builder.Services.AddScoped<ICategoryService, CategoryService>();
 builder.Services.AddScoped<IPlayerService, PlayerService>();
+builder.Services.AddScoped<IAdditionalInformationService, AdditionalInformationService>();
+builder.Services.AddScoped<IDocumentTypeService, DocumentTypeService>();
 
 
 var app = builder.Build();
