@@ -9,6 +9,7 @@ using NASSTBACKEND.Data.InputModels;
 using NASSTBACKEND.Data.Entities;
 using NASSTBACKEND.Data;
 using NASSTBACKEND.Options;
+using System.Security.Authentication;
 
 namespace NASSTBACKEND.Services.General
 {
@@ -37,15 +38,56 @@ namespace NASSTBACKEND.Services.General
         {
             try
             {
+                var DocumentType = await context.DocumentTypes.Where(c => c.Id == input.DocumentTypeId).FirstOrDefaultAsync();
+                var Information = await context.AdditionalInformation.Where(a => a.Id == input.AdditionalInformationId).FirstOrDefaultAsync();
+                var TeamAdmin = await context.Users.Where(u => u.Id == input.TeamAdminId).FirstOrDefaultAsync();
                 var sportType = new SportType
                 {
                     Name = input.Name,
-                    PlayersCount = input.PlayersCount,
-                    TeamsCount = input.TeamsCount,
+                    MaxTeams = input.TeamsCount,
                     CreatedBy = user,
-                    CreatedById = user.Id
+                    CreatedById = user.Id,
+                    TeamAdmin = TeamAdmin,
+                    TeamAdminId = input.TeamAdminId
                 };
                 await context.SportTypes.AddAsync(sportType);
+
+                foreach (var cat in input.SportPlayersCategories)
+                {
+                    var Category = await context.Category.Where(c => c.Id == cat.CategoryId).FirstOrDefaultAsync();
+                    var sportsPlayersCategory = new SportPlayersCategory
+                    {
+                        Category = Category,
+                        CategoryId = cat.CategoryId,
+                        PlayersCount = cat.PlayersCount,
+                        SportType = sportType,
+                        SportTypeId = sportType.Id
+                    };
+
+                    await context.SportPlayersCategories.AddAsync(sportsPlayersCategory);
+                }
+
+
+                var sportsPlayersInfo = new SportAdditionalInfo
+                {
+                    AdditionalInformation = Information,
+                    AdditionalInformationId = input.AdditionalInformationId,
+                    InformationValue = input.InformationValue,
+                    SportType = sportType,
+                    SportTypeId = sportType.Id
+                };
+                await context.SportAdditionalInformation.AddAsync(sportsPlayersInfo);
+
+                var sportDocs = new SportDocumentType
+                {
+                    DocumentType = DocumentType,
+                    DocumentTypeId = input.DocumentTypeId,
+                    DocumentLink = input.DocumentLink,
+                    SportType = sportType,
+                    SportTypeId = sportType.Id
+                };
+                await context.SportDocumentTypes.AddAsync(sportDocs);
+
                 await context.SaveChangesAsync();
                 return true;
             }
@@ -70,8 +112,7 @@ namespace NASSTBACKEND.Services.General
             {
                 var sportType = await context.SportTypes.Where(s => s.Id == input.Id && !s.IsArchived).FirstOrDefaultAsync();
                 sportType.Name = input.Name;
-                sportType.PlayersCount = input.PlayersCount;
-                sportType.TeamsCount = input.TeamsCount;
+                sportType.MaxTeams = input.TeamsCount;
 
                 await context.SaveChangesAsync();
                 return true;
@@ -92,8 +133,7 @@ namespace NASSTBACKEND.Services.General
                 {
                     Id = s.Id,
                     Name = s.Name,
-                    PlayersCount = s.PlayersCount,
-                    TeamsCount = s.TeamsCount
+                    TeamsCount = s.MaxTeams
                 };
                 sportsTypeView.Add(newView);
             }
@@ -107,8 +147,7 @@ namespace NASSTBACKEND.Services.General
             {
                 Id = sportType.Id,
                 Name = sportType.Name,
-                PlayersCount = sportType.PlayersCount,
-                TeamsCount = sportType.TeamsCount
+                TeamsCount = sportType.MaxTeams
             };
             return sportTypeView;
         }

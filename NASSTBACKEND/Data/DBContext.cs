@@ -15,6 +15,9 @@ namespace NASSTBACKEND.Data
         public virtual DbSet<Player> Players { get; set; }
         public virtual DbSet<AdditionalInformation> AdditionalInformation { get; set; }
         public virtual DbSet<DocumentType> DocumentTypes { get; set; }
+        public virtual DbSet<SportAdditionalInfo> SportAdditionalInformation { get; set; }
+        public virtual DbSet<SportDocumentType> SportDocumentTypes { get; set; }
+        public virtual DbSet<SportPlayersCategory> SportPlayersCategories { get; set; }
         public virtual DbSet<Role> Roles => base.Roles;
         public virtual DbSet<UserRefreshToken> UserRefreshTokens { get; set; }
         public DbSet<IdentityUserRole<string>> UserRoleBase => Set<IdentityUserRole<string>>();
