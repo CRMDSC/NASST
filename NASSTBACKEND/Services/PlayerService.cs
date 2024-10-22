@@ -76,7 +76,7 @@ namespace NASSTBACKEND.Services.General
             return players;
         }
 
-        public async Task<Result<bool>> UpdatePlayer(Player player, User user)
+        public async Task<Result<bool>> UpdatePlayer(EditPlayerInput player, User user)
         {
             var updatePlayer = await context.Players.Where(p => p.Id == player.Id).FirstOrDefaultAsync();
             if (updatePlayer == null)
@@ -87,7 +87,8 @@ namespace NASSTBACKEND.Services.General
             updatePlayer.LastName = player.LastName;
             updatePlayer.Email = player.Email;
             updatePlayer.PhoneNumber = player.PhoneNumber;
-            updatePlayer.CategortId = player.CategortId;
+            updatePlayer.CategortId = player.CategoryId;
+            updatePlayer.Category = player.Category;
             updatePlayer.UpdatedBy = user;
             updatePlayer.UpdatedById = user.Id;
             updatePlayer.UpdatedOn = DateTime.UtcNow;

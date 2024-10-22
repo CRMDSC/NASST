@@ -68,7 +68,7 @@ export interface SportType {
 }
 
 // ..\NASSTBACKEND\Data\Entities\User.cs
-export interface User  {
+export interface User {
     firstName?: string;
     lastName?: string;
     fullName?: string;
@@ -96,6 +96,17 @@ export interface UserRefreshToken {
     isActive: boolean;
     userId: string;
     user: User;
+}
+
+// ..\NASSTBACKEND\Data\InputModels\EditPlayerInput.cs
+export interface EditPlayerInput {
+    id: number;
+    firstName: string;
+    lastName: string;
+    email: string;
+    phoneNumber: string;
+    categoryId: number;
+    category: Category;
 }
 
 // ..\NASSTBACKEND\Data\InputModels\LoginInput.cs

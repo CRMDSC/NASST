@@ -10,7 +10,7 @@ namespace NASSTBACKEND.Services.Interfaces
         Task<Result<List<Player>>> GetPlayers();
         Task<Result<Player>> GetPlayerById(int id);
         Task<Result<bool>> DeletePlayer(int id);
-        Task<Result<bool>> UpdatePlayer(Player player, User user);
+        Task<Result<bool>> UpdatePlayer(EditPlayerInput player, User user);
 
     }
 }

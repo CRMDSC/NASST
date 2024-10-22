@@ -145,7 +145,7 @@ namespace NASSTBACKEND.Migrations
 
                     b.HasKey("Id");
 
-                    b.ToTable("Category");
+                    b.ToTable("Category", (string)null);
                 });
 
             modelBuilder.Entity("NASSTBACKEND.Data.Entities.Log", b =>
@@ -187,7 +187,7 @@ namespace NASSTBACKEND.Migrations
 
                     b.HasIndex("CreatedByUserId");
 
-                    b.ToTable("Logs");
+                    b.ToTable("Logs", (string)null);
                 });
 
             modelBuilder.Entity("NASSTBACKEND.Data.Entities.Player", b =>
@@ -239,7 +239,7 @@ namespace NASSTBACKEND.Migrations
 
                     b.HasIndex("UpdatedById");
 
-                    b.ToTable("Players");
+                    b.ToTable("Players", (string)null);
                 });
 
             modelBuilder.Entity("NASSTBACKEND.Data.Entities.Role", b =>
@@ -321,7 +321,7 @@ namespace NASSTBACKEND.Migrations
 
                     b.HasIndex("UpdatedById");
 
-                    b.ToTable("SportTypes");
+                    b.ToTable("SportTypes", (string)null);
                 });
 
             modelBuilder.Entity("NASSTBACKEND.Data.Entities.User", b =>
@@ -462,7 +462,7 @@ namespace NASSTBACKEND.Migrations
 
                     b.HasIndex("UserId");
 
-                    b.ToTable("UserRefreshTokens");
+                    b.ToTable("UserRefreshTokens", (string)null);
                 });
 
             modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityRoleClaim<string>", b =>

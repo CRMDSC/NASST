@@ -158,7 +158,7 @@ namespace NASSTBACKEND.Controllers
         [Authorize("Admin")]
         [HttpPost("UpdatePlayer")]
         [Produces(typeof(Result<bool>))]
-        public async Task<IActionResult> UpdatePlayer([FromBody] Player input)
+        public async Task<IActionResult> UpdatePlayer([FromBody] EditPlayerInput input)
         {
             var loggedInUser = await userManager.GetUserAsync(User);
             try
