@@ -145,7 +145,7 @@ namespace NASSTBACKEND.Migrations
 
                     b.HasKey("Id");
 
-                    b.ToTable("Category");
+                    b.ToTable("Category", (string)null);
                 });
 
             modelBuilder.Entity("NASSTBACKEND.Data.Entities.Log", b =>
@@ -187,7 +187,59 @@ namespace NASSTBACKEND.Migrations
 
                     b.HasIndex("CreatedByUserId");
 
-                    b.ToTable("Logs");
+                    b.ToTable("Logs", (string)null);
+                });
+
+            modelBuilder.Entity("NASSTBACKEND.Data.Entities.Player", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int");
+
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
+
+                    b.Property<int>("CategortId")
+                        .HasColumnType("int");
+
+                    b.Property<int>("CategoryId")
+                        .HasColumnType("int");
+
+                    b.Property<string>("CreatedById")
+                        .HasColumnType("nvarchar(450)");
+
+                    b.Property<DateTime>("CreatedOn")
+                        .HasColumnType("datetime2");
+
+                    b.Property<string>("Email")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("FirstName")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<bool>("IsArchived")
+                        .HasColumnType("bit");
+
+                    b.Property<string>("LastName")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("PhoneNumber")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("UpdatedById")
+                        .HasColumnType("nvarchar(450)");
+
+                    b.Property<DateTime?>("UpdatedOn")
+                        .HasColumnType("datetime2");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("CategoryId");
+
+                    b.HasIndex("CreatedById");
+
+                    b.HasIndex("UpdatedById");
+
+                    b.ToTable("Players", (string)null);
                 });
 
             modelBuilder.Entity("NASSTBACKEND.Data.Entities.Role", b =>
@@ -269,7 +321,7 @@ namespace NASSTBACKEND.Migrations
 
                     b.HasIndex("UpdatedById");
 
-                    b.ToTable("SportTypes");
+                    b.ToTable("SportTypes", (string)null);
                 });
 
             modelBuilder.Entity("NASSTBACKEND.Data.Entities.User", b =>
@@ -278,9 +330,6 @@ namespace NASSTBACKEND.Migrations
                         .HasColumnType("nvarchar(450)");
 
                     b.Property<int>("AccessFailedCount")
-                        .HasColumnType("int");
-
-                    b.Property<int?>("CategoryId")
                         .HasColumnType("int");
 
                     b.Property<string>("ConcurrencyStamp")
@@ -356,8 +405,6 @@ namespace NASSTBACKEND.Migrations
 
                     b.HasKey("Id");
 
-                    b.HasIndex("CategoryId");
-
                     b.HasIndex("CreatedById");
 
                     b.HasIndex("NormalizedEmail")
@@ -415,7 +462,7 @@ namespace NASSTBACKEND.Migrations
 
                     b.HasIndex("UserId");
 
-                    b.ToTable("UserRefreshTokens");
+                    b.ToTable("UserRefreshTokens", (string)null);
                 });
 
             modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityRoleClaim<string>", b =>
@@ -478,6 +525,29 @@ namespace NASSTBACKEND.Migrations
                     b.Navigation("CreatedByUser");
                 });
 
+            modelBuilder.Entity("NASSTBACKEND.Data.Entities.Player", b =>
+                {
+                    b.HasOne("NASSTBACKEND.Data.Entities.Category", "Category")
+                        .WithMany()
+                        .HasForeignKey("CategoryId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.HasOne("NASSTBACKEND.Data.Entities.User", "CreatedBy")
+                        .WithMany()
+                        .HasForeignKey("CreatedById");
+
+                    b.HasOne("NASSTBACKEND.Data.Entities.User", "UpdatedBy")
+                        .WithMany()
+                        .HasForeignKey("UpdatedById");
+
+                    b.Navigation("Category");
+
+                    b.Navigation("CreatedBy");
+
+                    b.Navigation("UpdatedBy");
+                });
+
             modelBuilder.Entity("NASSTBACKEND.Data.Entities.Role", b =>
                 {
                     b.HasOne("NASSTBACKEND.Data.Entities.User", "CreatedBy")
@@ -510,10 +580,6 @@ namespace NASSTBACKEND.Migrations
 
             modelBuilder.Entity("NASSTBACKEND.Data.Entities.User", b =>
                 {
-                    b.HasOne("NASSTBACKEND.Data.Entities.Category", "Category")
-                        .WithMany()
-                        .HasForeignKey("CategoryId");
-
                     b.HasOne("NASSTBACKEND.Data.Entities.User", "CreatedBy")
                         .WithMany()
                         .HasForeignKey("CreatedById")
@@ -523,8 +589,6 @@ namespace NASSTBACKEND.Migrations
                         .WithMany()
                         .HasForeignKey("UpdatedById")
                         .OnDelete(DeleteBehavior.NoAction);
-
-                    b.Navigation("Category");
 
                     b.Navigation("CreatedBy");
 

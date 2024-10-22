@@ -19,6 +19,24 @@ export interface Log {
     createdByUser?: User;
 }
 
+// ..\NASSTBACKEND\Data\Entities\Player.cs
+export interface Player {
+    id: number;
+    firstName?: string;
+    lastName?: string;
+    email?: string;
+    phoneNumber?: string;
+    categortId: number;
+    category: Category;
+    createdOn: Date;
+    updatedOn?: Date;
+    isArchived: boolean;
+    createdById?: string;
+    createdBy?: User;
+    updatedById?: string;
+    updatedBy?: User;
+}
+
 // ..\NASSTBACKEND\Data\Entities\Role.cs
 export interface Role {
     createdOn: Date;
@@ -34,7 +52,6 @@ export interface Role {
 export enum Roles {
     User = 'User',
     Admin = 'Admin',
-    Player = 'Player',
 }
 
 // ..\NASSTBACKEND\Data\Entities\SportType.cs
@@ -63,8 +80,6 @@ export interface User {
     createdBy?: User;
     updatedById?: string;
     updatedBy?: User;
-    categoryId?: number;
-    category?: Category;
 }
 
 // ..\NASSTBACKEND\Data\Entities\UserRefreshToken.cs
@@ -83,11 +98,31 @@ export interface UserRefreshToken {
     user: User;
 }
 
+// ..\NASSTBACKEND\Data\InputModels\EditPlayerInput.cs
+export interface EditPlayerInput {
+    id: number;
+    firstName: string;
+    lastName: string;
+    email: string;
+    phoneNumber: string;
+    categoryId: number;
+    category: Category;
+}
+
 // ..\NASSTBACKEND\Data\InputModels\LoginInput.cs
 export interface LoginInput {
     email: string;
     password: string;
     fcmToken: string;
+}
+
+// ..\NASSTBACKEND\Data\InputModels\PlayerInput.cs
+export interface PlayerInput {
+    firstName: string;
+    lastName: string;
+    email: string;
+    phoneNumber: string;
+    categoryId: number;
 }
 
 // ..\NASSTBACKEND\Data\InputModels\RegisterInput.cs
