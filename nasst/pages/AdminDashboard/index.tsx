@@ -35,7 +35,7 @@ const AdminDashboard = inject('user')(observer(({ user }: Props) => {
     };
 
     return (
-        <Box>
+        <Box sx={{ overflow: "hidden", margin:0, padding:0, height:"90%" }}>
             <Box
                 sx={{
                     display: 'flex',
@@ -44,11 +44,13 @@ const AdminDashboard = inject('user')(observer(({ user }: Props) => {
                     width: '100%',
                     bgcolor: 'background.paper',
                     padding: '10px',
+                    position:'sticky', top:0 ,
+                    overflowY:'hidden'
                 }}
             >
-                <Box sx={{ display: 'flex', alignItems: 'center' }}>
+                <Box sx={{ display: 'flex', alignItems: 'center',position:'sticky', top:0 }}>
                     {/* Logo */}
-                    <Box component="img" src="path/to/logo.png" alt="Logo" sx={{ height: 'auto', marginRight: 2 }} /> 
+                    <Box component="img" src="path/to/logo.png" alt="Logo" sx={{ height: 'auto', marginRight: 2,position:'sticky', top:0  }} /> 
                     <Tabs
                         value={value}
                         onChange={handleChange}
@@ -76,16 +78,16 @@ const AdminDashboard = inject('user')(observer(({ user }: Props) => {
             </Box>
             {/* <Divider /> */}
             {value === 0 ? (
-                <div style={{ backgroundColor : '#f9f9f9', height:"100vh"}}>   <Cateories/></div>
+                <div style={{ backgroundColor : '#f9f9f9',height: "calc(100vh - 85px)"}}>   <Cateories/></div>
              
             ) : value === 1 ? (
-                <div style={{ backgroundColor : '#f9f9f9', height:"100vh"}}> <Documents /></div>
+                <div style={{ backgroundColor : '#f9f9f9', height: "calc(100vh - 85px)"}}> <Documents /></div>
             )  : value === 2 ? (
-                <div style={{ backgroundColor : '#f9f9f9', height:"100vh"}}> <Information /></div>
+                <div style={{ backgroundColor : '#f9f9f9',height: "calc(100vh - 85px)"}}> <Information /></div>
             ) : value === 3 ? (
-                <div style={{ backgroundColor : '#f9f9f9', height:"100vh"}}> <Players /></div>
+                <div style={{ backgroundColor : '#f9f9f9', height: "calc(100vh - 85px)"}}> <Players /></div>
             ) :value === 4 ? (
-                <SportsTypes />
+                <div style={{ backgroundColor : '#f9f9f9', height: "calc(100vh - 85px)"}}> <SportsTypes /></div>
             ) : (
                 <Teams />
             )}

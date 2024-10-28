@@ -38,8 +38,14 @@ namespace NASSTBACKEND.Services.General
         {
             try
             {
-                var DocumentType = await context.DocumentTypes.Where(c => c.Id == input.DocumentTypeId).FirstOrDefaultAsync();
-                var Information = await context.AdditionalInformation.Where(a => a.Id == input.AdditionalInformationId).FirstOrDefaultAsync();
+                if(input.TeamAdminId == null || input.TeamAdminId == "")
+                {
+                   return Result.BadRequest<bool>().With(Error.InvalidParameter("Sport type admin cannot be empty."));
+                }
+                if(input.Name == null || input.Name == "")
+                {
+                     return Result.BadRequest<bool>().With(Error.InvalidParameter("Sport type title cannot be empty."));
+                }
                 var TeamAdmin = await context.Users.Where(u => u.Id == input.TeamAdminId).FirstOrDefaultAsync();
                 var sportType = new SportType
                 {
@@ -52,48 +58,64 @@ namespace NASSTBACKEND.Services.General
                 };
                 await context.SportTypes.AddAsync(sportType);
 
-                foreach (var cat in input.SportPlayersCategories)
+                if (input.SportPlayersCategories != null)
                 {
-                    var Category = await context.Category.Where(c => c.Id == cat.CategoryId).FirstOrDefaultAsync();
-                    var sportsPlayersCategory = new SportPlayersCategory
+                    foreach (var cat in input.SportPlayersCategories)
                     {
-                        Category = Category,
-                        CategoryId = cat.CategoryId,
-                        PlayersCount = cat.PlayersCount,
-                        SportType = sportType,
-                        SportTypeId = sportType.Id
-                    };
+                        var Category = await context.Category.Where(c => c.Id == cat.CategoryId).FirstOrDefaultAsync();
+                        var sportsPlayersCategory = new SportPlayersCategory
+                        {
+                            Category = Category,
+                            CategoryId = cat.CategoryId,
+                            PlayersCount = cat.PlayersCount,
+                            SportType = sportType,
+                            SportTypeId = sportType.Id
+                        };
 
-                    await context.SportPlayersCategories.AddAsync(sportsPlayersCategory);
+                        await context.SportPlayersCategories.AddAsync(sportsPlayersCategory);
+                    }
+
+                }
+                if (input.SportAdditionalInfo != null)
+                {
+                    foreach (var info in input.SportAdditionalInfo)
+                    {
+                        var Information = await context.AdditionalInformation.Where(i => i.Id == info.Id).FirstOrDefaultAsync();
+                        var sportsPlayersInfo = new SportAdditionalInfo
+                        {
+                            AdditionalInformation = Information,
+                            AdditionalInformationId = info.Id,
+                            SportType = sportType,
+                            SportTypeId = sportType.Id
+                        };
+                        await context.SportAdditionalInformation.AddAsync(sportsPlayersInfo);
+
+                    }
                 }
 
-
-                var sportsPlayersInfo = new SportAdditionalInfo
+                if (input.SportDocumentType != null)
                 {
-                    AdditionalInformation = Information,
-                    AdditionalInformationId = input.AdditionalInformationId,
-                    InformationValue = input.InformationValue,
-                    SportType = sportType,
-                    SportTypeId = sportType.Id
-                };
-                await context.SportAdditionalInformation.AddAsync(sportsPlayersInfo);
+                    foreach (var doc in input.SportDocumentType)
+                    {
+                        var DocumentType = await context.DocumentTypes.Where(d => d.Id == doc.Id).FirstOrDefaultAsync();
+                        var sportDocs = new SportDocumentType
+                        {
+                            DocumentType = DocumentType,
+                            DocumentTypeId = doc.Id,
+                            SportType = sportType,
+                            SportTypeId = sportType.Id
+                        };
+                        await context.SportDocumentTypes.AddAsync(sportDocs);
+                    }
 
-                var sportDocs = new SportDocumentType
-                {
-                    DocumentType = DocumentType,
-                    DocumentTypeId = input.DocumentTypeId,
-                    DocumentLink = input.DocumentLink,
-                    SportType = sportType,
-                    SportTypeId = sportType.Id
-                };
-                await context.SportDocumentTypes.AddAsync(sportDocs);
+                }
 
                 await context.SaveChangesAsync();
                 return true;
             }
             catch (Exception ex)
             {
-                return false;
+                return Result.BadRequest<bool>().With(Error.InvalidParameter("Something went wrong please contact your administrator."));
             }
 
         }
@@ -142,12 +164,23 @@ namespace NASSTBACKEND.Services.General
 
         public async Task<Result<SportTypeView>> GetSportTypeById(int id)
         {
-            var sportType = await context.SportTypes.Where(s => s.Id == id && !s.IsArchived).FirstOrDefaultAsync();
+            var sportType = await context.SportTypes.Where(s => s.Id == id && !s.IsArchived).Include(s => s.TeamAdmin).FirstOrDefaultAsync();
+            var playersCategories = await context.SportPlayersCategories.Where(s => s.SportTypeId == sportType.Id).Include(s => s.Category).ToListAsync();
+            var playersInformation = await context.SportAdditionalInformation.Where(s => s.SportTypeId == sportType.Id).Include(s => s.AdditionalInformation).ToListAsync();
+            var playersDocs = await context.SportDocumentTypes.Where(s => s.SportTypeId == sportType.Id).Include(s => s.DocumentType).ToListAsync();
+
             var sportTypeView = new SportTypeView
             {
                 Id = sportType.Id,
                 Name = sportType.Name,
-                TeamsCount = sportType.MaxTeams
+                TeamsCount = sportType.MaxTeams,
+                RegistrationTime = sportType.RegistrationTime,
+                ReplacementTime = sportType.ReplacementTime,
+                TeamAdmin = sportType.TeamAdmin,
+                SportAdditionalInfo = playersInformation,
+                SportDocumentType = playersDocs,
+                SportPlayersCategories = playersCategories,
+                TeamAdminId = sportType.TeamAdminId
             };
             return sportTypeView;
         }

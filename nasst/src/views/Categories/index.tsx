@@ -157,8 +157,8 @@ const Categories = () => {
     };
 
     return (
-        <Box sx={{ padding: 3, display: 'flex', flexDirection: 'row', width: '100%' }}>
-            <Box sx={{ padding: 3, display: 'flex', flexDirection: 'column', flexGrow: 3 }}>
+        <Box sx={{ padding: 3, display: 'flex', flexDirection: 'row', width: '100%',  overflowY:'hidden' }}>
+            <Box sx={{ padding: 3, display: 'flex', flexDirection: 'column', flexGrow: 3 ,  overflowY:'hidden'}}>
                 <Dialog
                     open={openDelete}
                     TransitionComponent={Transition}

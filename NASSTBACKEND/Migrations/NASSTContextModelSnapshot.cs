@@ -339,9 +339,8 @@ namespace NASSTBACKEND.Migrations
                     b.Property<int>("AdditionalInformationId")
                         .HasColumnType("int");
 
-                    b.Property<string>("InformationValue")
-                        .IsRequired()
-                        .HasColumnType("nvarchar(max)");
+                    b.Property<bool>("IsArchived")
+                        .HasColumnType("bit");
 
                     b.Property<int>("SportTypeId")
                         .HasColumnType("int");
@@ -363,12 +362,11 @@ namespace NASSTBACKEND.Migrations
 
                     SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
 
-                    b.Property<string>("DocumentLink")
-                        .IsRequired()
-                        .HasColumnType("nvarchar(max)");
-
                     b.Property<int>("DocumentTypeId")
                         .HasColumnType("int");
+
+                    b.Property<bool>("IsArchived")
+                        .HasColumnType("bit");
 
                     b.Property<int>("SportTypeId")
                         .HasColumnType("int");
@@ -392,6 +390,9 @@ namespace NASSTBACKEND.Migrations
 
                     b.Property<int>("CategoryId")
                         .HasColumnType("int");
+
+                    b.Property<bool>("IsArchived")
+                        .HasColumnType("bit");
 
                     b.Property<int>("PlayersCount")
                         .HasColumnType("int");

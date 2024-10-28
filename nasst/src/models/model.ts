@@ -52,7 +52,7 @@ export interface Player {
 }
 
 // ..\NASSTBACKEND\Data\Entities\Role.cs
-export interface Role  {
+export interface Role {
     createdOn: Date;
     updatedOn?: Date;
     createdById?: string;
@@ -68,17 +68,51 @@ export enum Roles {
     Admin = 'Admin',
 }
 
+// ..\NASSTBACKEND\Data\Entities\SportAdditionalInfo.cs
+export interface SportAdditionalInfo {
+    id: number;
+    additionalInformation: AdditionalInformation;
+    additionalInformationId: number;
+    sportType: SportType;
+    sportTypeId: number;
+    isArchived: boolean;
+}
+
+// ..\NASSTBACKEND\Data\Entities\SportDocumentType.cs
+export interface SportDocumentType {
+    id: number;
+    documentType: DocumentType;
+    documentTypeId: number;
+    sportType: SportType;
+    sportTypeId: number;
+    isArchived: boolean;
+}
+
+// ..\NASSTBACKEND\Data\Entities\SportPlayersCategory.cs
+export interface SportPlayersCategory {
+    id: number;
+    category: Category;
+    categoryId: number;
+    sportType?: SportType;
+    sportTypeId?: number;
+    playersCount: number;
+    isArchived: boolean;
+}
+
 // ..\NASSTBACKEND\Data\Entities\SportType.cs
 export interface SportType {
     id: number;
     name: string;
-    playersCount: number;
-    teamsCount: number;
+    maxTeams: number;
     isArchived: boolean;
     createdById?: string;
-    createdBy: User;
+    createdBy?: User;
     updatedById?: string;
-    updatedBy: User;
+    updatedBy?: User;
+    teamAdmin?: User;
+    teamAdminId?: string;
+    registrationTime: Date;
+    replacementTime: Date;
 }
 
 // ..\NASSTBACKEND\Data\Entities\User.cs
@@ -151,8 +185,13 @@ export interface RegisterInput {
 // ..\NASSTBACKEND\Data\InputModels\SportTypeInput.cs
 export interface SportTypeInput {
     name: string;
-    playersCount: number;
     teamsCount: number;
+    teamAdminId?: string;
+    registrationTime: Date;
+    replacementTime: Date;
+    sportPlayersCategories: SportPlayersCategory[];
+    sportAdditionalInfo: AdditionalInformation[];
+    sportDocumentType: DocumentType[];
 }
 
 // ..\NASSTBACKEND\Data\InputModels\UpdateSportTypeInput.cs
@@ -185,12 +224,19 @@ export interface Result<TPayload> {
     errors: Error[];
 }
 
+
 // ..\NASSTBACKEND\Data\ViewModels\SportTypeView.cs
 export interface SportTypeView {
     id: number;
     name: string;
-    playersCount: number;
     teamsCount: number;
+    teamAdminId?: string;
+    teamAdmin?: User;
+    registrationTime: Date;
+    replacementTime: Date;
+    sportPlayersCategories: SportPlayersCategory[];
+    sportAdditionalInfo: SportAdditionalInfo[];
+    sportDocumentType: SportDocumentType[];
 }
 
 // ..\NASSTBACKEND\Data\ViewModels\UserView.cs

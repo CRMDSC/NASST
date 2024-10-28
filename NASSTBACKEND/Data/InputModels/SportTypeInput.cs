@@ -12,10 +12,8 @@ namespace NASSTBACKEND.Data.InputModels
     [DataMember] public string? TeamAdminId { get; set; }
     [DataMember] public DateTime RegistrationTime { get; set; }
     [DataMember] public DateTime ReplacementTime { get; set; }
-    [DataMember] public int AdditionalInformationId { get; set; }
-    [DataMember] public string InformationValue { get; set; }
-   [DataMember] public List<SportPlayersCategory> SportPlayersCategories { get; set; }
-    [DataMember] public int DocumentTypeId { get; set; }
-    [DataMember] public string DocumentLink { get; set; }
+    [DataMember] public List<SportPlayersCategory> SportPlayersCategories { get; set; }
+    [DataMember] public List<AdditionalInformation> SportAdditionalInfo { get; set; }
+    [DataMember] public List<DocumentType> SportDocumentType { get; set; }
   }
 }
