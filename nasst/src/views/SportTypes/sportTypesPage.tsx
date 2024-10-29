@@ -1,9 +1,9 @@
 import * as React from 'react';
 import { Alert, Autocomplete, Box, Button, Divider, IconButton, List, ListItem, Table, TableBody, TableCell, TablePagination, TableContainer, TableHead, TableRow, TextField, Typography } from '@mui/material';
-import { Add, Edit, Delete, Visibility, Height } from '@mui/icons-material';
+import { Add, Edit, Delete, Visibility, Height, Rowing } from '@mui/icons-material';
 import { useEffect, useState } from 'react';
-import { AdditionalInformation, Category, DocumentType, SportAdditionalInfo, SportPlayersCategory, SportTypeInput, SportTypeView, UserView } from '../../models/model';
-import { addSportType, getAllSportsTypes, getAllUsers, getSportType } from '../../api/sportType';
+import { AdditionalInformation, Category, DocumentType, SportAdditionalInfo, SportPlayersCategory, SportType, SportTypeInput, SportTypeView, UpdateSportTypeInput, UserView } from '../../models/model';
+import { addSportType, deleteSportType, editSportType, getAllSportsTypes, getAllUsers, getSportType } from '../../api/sportType';
 import CloseIcon from '@mui/icons-material/Close';
 import Slide from '@mui/material/Slide';
 import { TransitionProps } from '@mui/material/transitions';
@@ -17,6 +17,11 @@ import AddCircleIcon from '@mui/icons-material/AddCircle';
 import { getCategories } from '../../api/category';
 import { getInformation } from '../../api/information';
 import { getDocs } from '../../api/document';
+import Dialog from '@mui/material/Dialog';
+import DialogActions from '@mui/material/DialogActions';
+import DialogContent from '@mui/material/DialogContent';
+import DialogContentText from '@mui/material/DialogContentText';
+import DialogTitle from '@mui/material/DialogTitle';
 
 
 const Transition = React.forwardRef(function Transition(
@@ -42,14 +47,26 @@ const SportsType = () => {
   const [categories, setCategories] = useState<Category[]>([]);
   const [information, setInformation] = useState<AdditionalInformation[]>([]);
   const [documentType, setDocumentType] = useState<DocumentType[]>([]);
-  const [rowsInfo, setRowsInfo] = useState<any>([]);
-  const [rowsDocs, setRowsDocs] = useState<any>([]);
+  const [openDelete, setOpenDelete] = useState(false)
   const [rowsCategories, setRowsCategories] = useState<SportPlayersCategory[]>([]);
   const [viewFormExpanded, setViewFormExpanded] = useState(false);
   const [success, setSuccess] = useState(false)
   const [error, setError] = useState("")
   const [errorAlert, setErrorAlert] = useState(false)
   const [successMessage, setSuccessMessage] = useState('');
+  const [deleteId, setDeleteId] = useState(0)
+  const [sportTypeInputEdit, setSportTypeInputEdit] = useState<UpdateSportTypeInput>({
+    id: 0,
+    name: "",
+    registrationTime: new Date(),
+    replacementTime: new Date(),
+    sportAdditionalInfo: [],
+    sportDocumentType: [],
+    sportPlayersCategories: [],
+    teamsCount: 0,
+    teamAdminId: "",
+    teamAdmin: undefined
+  })
   const [sportTypeInput, setSportTypeInput] = useState<SportTypeInput>({
     name: "",
     registrationTime: new Date(),
@@ -79,13 +96,15 @@ const SportsType = () => {
     const { name, value } = event.target;
     console.log(name, value)
     if (name === "playersCount") {
-      updatedRows[index].playersCount = Number(value);
+      if (updatedRows[index].playersCount != undefined) {
+        updatedRows[index].playersCount = Number(value);
+      }
     } else if (name === "categoryId") {
-      updatedRows[index].categoryId = Number(value); // Assuming you're using category IDs
+      updatedRows[index].categoryId = Number(value); 
     }
     console.log(updatedRows)
     setRowsCategories(updatedRows);
-    setSportTypeInput({...sportTypeInput, sportPlayersCategories: updatedRows})
+    setSportTypeInput({ ...sportTypeInput, sportPlayersCategories: updatedRows })
   };
 
   const handleClickOpen = () => {
@@ -117,10 +136,30 @@ const SportsType = () => {
       setErrorAlert(true)
     }
   }
-  const getSportById = async (id: number) => {
-    var sportType = (await getSportType(id)).payload
-    setSportType(sportType)
-    setViewFormExpanded(true)
+  const getSportById = async (id: number, view: string) => {
+    if (view == "view") {
+      var sportType = (await getSportType(id)).payload
+      setSportType(sportType)
+      setViewFormExpanded(true)
+    }
+    else if (view = "edit") {
+      var sportType = (await getSportType(id)).payload
+      var sportTypeInput: UpdateSportTypeInput = {
+        name: sportType.name,
+        registrationTime: sportType.registrationTime,
+        replacementTime: sportType.replacementTime,
+        sportAdditionalInfo: sportType.sportAdditionalInfo.map((info) => info.additionalInformation),
+        sportDocumentType: sportType.sportDocumentType.map((doc) => doc.documentType),
+        sportPlayersCategories: sportType.sportPlayersCategories,
+        teamsCount: sportType.teamsCount,
+        teamAdminId: sportType.teamAdminId,
+        teamAdmin: sportType.teamAdmin,
+        id: sportType.id
+      }
+      setRowsCategories(sportType.sportPlayersCategories)
+      setSportTypeInputEdit(sportTypeInput)
+      setEditFormExpanded(true)
+    }
   }
 
 
@@ -146,13 +185,18 @@ const SportsType = () => {
     }
   };
 
-  const handleEdit = (id: number) => {
-    console.log(`Edit sport type with ID: ${id}`);
+  const handleEdit = async () => {
+    await editSportType(sportTypeInputEdit)
   };
 
-  const handleDelete = (id: number) => {
-    console.log(`Delete sport type with ID: ${id}`);
+  const handleDelete = async () => {
+    console.log(deleteId)
+    await deleteSportType(deleteId)
   };
+  const handleOpenDelete = (id: number) => {
+    setDeleteId(id)
+    setOpenDelete(true)
+  }
 
   useEffect(() => {
     fetchData();
@@ -160,7 +204,25 @@ const SportsType = () => {
   const paginatedData = filteredSportsData.slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage);
   return (
     <Box sx={{ padding: 3, display: 'flex', flexDirection: 'row', width: '100%', position: 'relative' }}>
-      <Box sx={{ padding: 3, display: 'flex', flexDirection: 'column', flexGrow: 1, transition: 'opacity 0.5s ease', opacity: viewFormExpanded ? 0 : formExpanded ? 0 : 1 }}>
+      <Dialog
+        open={openDelete}
+        TransitionComponent={Transition}
+        keepMounted
+        onClose={() => { setOpenDelete(false) }}
+        aria-describedby="alert-dialog-slide-description"
+      >
+        <DialogTitle>{"Delete Category"}</DialogTitle>
+        <DialogContent>
+          <DialogContentText id="alert-dialog-slide-description">
+            Are you sure you want to delete this sport type?
+          </DialogContentText>
+        </DialogContent>
+        <DialogActions>
+          <Button onClick={handleDelete}>Delete</Button>
+          <Button onClick={() => { setOpenDelete(false) }}>Close</Button>
+        </DialogActions>
+      </Dialog>
+      <Box sx={{ padding: 3, display: 'flex', flexDirection: 'column', flexGrow: 1, transition: 'opacity 0.5s ease', opacity: viewFormExpanded ? 0 : formExpanded ? 0 : editFormExpanded ? 0 : 1 }}>
         {success &&
           <Alert severity="success" onClose={() => setSuccess(false)}>{successMessage}</Alert>
         }
@@ -190,13 +252,13 @@ const SportsType = () => {
                       <TableCell>{sport.name}</TableCell>
                       <TableCell>{sport.teamsCount}</TableCell>
                       <TableCell>
-                        <IconButton onClick={() => getSportById(sport.id)}>
+                        <IconButton onClick={() => getSportById(sport.id, "view")}>
                           <Visibility />
                         </IconButton>
-                        <IconButton onClick={() => handleEdit(sport.id)}>
+                        <IconButton onClick={() => getSportById(sport.id, "edit")}>
                           <Edit />
                         </IconButton>
-                        <IconButton onClick={() => handleDelete(sport.id)}>
+                        <IconButton onClick={() => handleOpenDelete(sport.id)}>
                           <Delete />
                         </IconButton>
                       </TableCell>
@@ -362,29 +424,26 @@ const SportsType = () => {
               <AddCircleIcon />
             </IconButton>
           </Box>
-          {rowsCategories.map((row: any, index: any) => (
+          {sportType?.sportPlayersCategories.map((row: any, index: any) => (
             <Box key={index} display="flex" gap={2} mb={1}>
               <Autocomplete
+                disabled
+                value={row.category}
                 disablePortal
                 options={categories}
                 getOptionLabel={(option) => option.name}
                 renderInput={(params) => <TextField {...params} label="Category" size="small" sx={{ backgroundColor: 'white', width: "200px" }} />}
               />
               <TextField
+                disabled
                 size="small"
                 placeholder="Count"
                 type="number"
+                value={row.playersCount}
                 sx={{ width: '200px', backgroundColor: 'white' }}
               />
             </Box>
           ))}
-
-          {/* Submit Button */}
-          <Box sx={{ display: 'flex', justifyContent: "center", mt: 4 }}>
-            <Button variant="contained" color="primary" onClick={handleAddSportsType} sx={{ fontWeight: '600', px: 4 }}>
-              Add Sport Type
-            </Button>
-          </Box>
         </Box>
 
 
@@ -563,6 +622,192 @@ const SportsType = () => {
           <Box sx={{ display: 'flex', justifyContent: "center", mt: 4 }}>
             <Button variant="contained" color="primary" onClick={handleAddSportsType} sx={{ fontWeight: '600', px: 4 }}>
               Add Sport Type
+            </Button>
+          </Box>
+        </Box>
+
+      )}
+      {editFormExpanded && (
+        <Box
+          sx={{
+            position: 'fixed',
+            top: '50%',
+            left: '50%',
+            transform: 'translate(-50%, -50%)',
+            width: { xs: '95%', sm: '85%', md: '75%' },
+            height: "auto",
+            maxHeight: '80vh',
+            padding: { xs: 2, sm: 4 },
+            backgroundColor: '#f9fafc',
+            borderRadius: '12px',
+            display: 'flex',
+            flexDirection: 'column',
+            boxShadow: '0px 10px 25px rgba(0, 0, 0, 0.1)',
+            overflowY: 'auto',
+            zIndex: 10,
+          }}
+        >
+          <Box sx={{ display: 'flex', justifyContent: "flex-end" }}>
+            <Button variant="outlined" color="primary" onClick={() => setEditFormExpanded(false)}>
+              Back
+            </Button>
+          </Box>
+
+          {/* Section Title */}
+          <Typography sx={{ color: '#3b6fa0', fontSize: { xs: '18px', sm: '20px' }, fontWeight: '500', mb: 2 }}>
+            General Information
+          </Typography>
+
+          <Box sx={{ display: 'flex', flexDirection: 'row', flexWrap: 'wrap', gap: 2, mb: 3 }}>
+            <Box sx={{ display: 'flex', flexDirection: 'column', width: { xs: '100%', sm: '48%', md: '220px' } }}>
+              <Typography sx={{ color: '#3b6fa0', fontSize: '15px', fontWeight: '500' }}>Title</Typography>
+              <TextField
+                variant="outlined"
+                placeholder="Title"
+                value={sportTypeInputEdit?.name}
+                size="small"
+                onChange={(e) => setSportTypeInputEdit({ ...sportTypeInputEdit, name: e.target.value })}
+                sx={{ width: '100%', backgroundColor: 'white' }}
+              />
+            </Box>
+
+            <Box sx={{ display: 'flex', flexDirection: 'column', width: { xs: '100%', sm: '48%', md: '220px' } }}>
+              <Typography sx={{ color: '#3b6fa0', fontSize: '15px', fontWeight: '500' }}>Teams Count</Typography>
+              <TextField
+                variant="outlined"
+                placeholder="Teams Count"
+                value={sportTypeInputEdit.teamsCount}
+                size="small"
+                type="number"
+                onChange={(e) => setSportTypeInputEdit({ ...sportTypeInputEdit, teamsCount: Number(e.target.value) })}
+                sx={{ width: '100%', backgroundColor: 'white' }}
+              />
+            </Box>
+
+            <Box sx={{ display: 'flex', flexDirection: 'column', width: { xs: '100%', sm: '48%', md: '220px' } }}>
+              <Typography sx={{ color: '#3b6fa0', fontSize: '15px', fontWeight: '500' }}>Sport Type Admin</Typography>
+              <Autocomplete
+                disablePortal
+                value={sportTypeInputEdit.teamAdmin as unknown as UserView}
+                options={users}
+                getOptionLabel={(option) => option.fullName}
+                onChange={(e, props) => setSportTypeInputEdit({ ...sportTypeInputEdit, teamAdminId: props?.userId })}
+                renderInput={(params) => <TextField {...params} size="small" sx={{ width: '100%', backgroundColor: 'white' }} />}
+              />
+            </Box>
+
+            <Box sx={{ display: 'flex', flexDirection: 'column', width: { xs: '100%', sm: '48%', md: '220px' } }}>
+              <Typography sx={{ color: '#3b6fa0', fontSize: '15px', fontWeight: '500' }}>Registration Time</Typography>
+              <LocalizationProvider dateAdapter={AdapterDayjs}>
+                <DateTimePicker
+                  sx={{ width: '100%', backgroundColor: 'white' }}
+                  value={sportTypeInputEdit.registrationTime ? dayjs(sportTypeInputEdit.registrationTime) : null}
+                  onChange={(newValue) => setSportTypeInputEdit({ ...sportTypeInputEdit, registrationTime: newValue?.toDate() || null as unknown as Date })}
+                  slotProps={{ textField: { size: 'small' } }}
+                />
+              </LocalizationProvider>
+            </Box>
+            <Box sx={{ display: 'flex', flexDirection: 'column', width: { xs: '100%', sm: '48%', md: '220px' } }}>
+              <Typography sx={{ color: '#3b6fa0', fontSize: '15px', fontWeight: '500' }}>Replacement Time</Typography>
+              <LocalizationProvider dateAdapter={AdapterDayjs}>
+                <DateTimePicker
+                  sx={{ width: '100%', backgroundColor: 'white' }}
+                  value={sportTypeInputEdit.registrationTime ? dayjs(sportTypeInputEdit.registrationTime) : null}
+                  onChange={(newValue) => setSportTypeInputEdit({ ...sportTypeInputEdit, replacementTime: newValue?.toDate() || null as unknown as Date })}
+                  slotProps={{ textField: { size: 'small' } }}
+                />
+              </LocalizationProvider>
+            </Box>
+          </Box>
+
+          {/* Divider */}
+          <Divider sx={{ my: 3 }} />
+
+          {/* Additional Information */}
+          <Typography sx={{ color: '#3b6fa0', fontSize: { xs: '18px', sm: '20px' }, fontWeight: '500', mb: 2 }}>
+            Additional Information
+          </Typography>
+          <Typography sx={{ color: '#3b6fa0', fontSize: '14px', mb: 2 }}>
+            Select the information to include when adding a new team.
+          </Typography>
+          <Autocomplete
+            multiple
+            disablePortal
+            value={sportTypeInputEdit?.sportAdditionalInfo}
+            options={information}
+            getOptionLabel={(option) => option.name}
+            onChange={(ev, props) => {
+              setSportTypeInputEdit({ ...sportTypeInputEdit, sportAdditionalInfo: props })
+            }}
+            renderInput={(params) => <TextField {...params} size="small" sx={{ width: '100%', backgroundColor: 'white' }} />}
+          />
+
+          {/* Divider */}
+          <Divider sx={{ my: 3 }} />
+
+          {/* Sports Documents */}
+          <Typography sx={{ color: '#3b6fa0', fontSize: { xs: '18px', sm: '20px' }, fontWeight: '500', mb: 2 }}>
+            Sports Documents
+          </Typography>
+          <Typography sx={{ color: '#3b6fa0', fontSize: '14px', mb: 2 }}>
+            Select the documents to include when adding a new team.
+          </Typography>
+          <Autocomplete
+            multiple
+            disablePortal
+            value={sportTypeInputEdit?.sportDocumentType}
+            options={documentType}
+            getOptionLabel={(option) => option.type}
+            onChange={(ev, props) => { setSportTypeInputEdit({ ...sportTypeInputEdit, sportDocumentType: props }) }}
+            renderInput={(params) => <TextField {...params} size="small" sx={{ width: '100%', backgroundColor: 'white' }} />}
+          />
+
+          {/* Divider */}
+          <Divider sx={{ my: 3 }} />
+
+          {/* Sports Players Categories */}
+          <Box sx={{ display: 'flex', alignItems: 'center', mb: 2 }}>
+            <Typography sx={{ color: '#3b6fa0', fontSize: { xs: '18px', sm: '20px' }, fontWeight: '500' }}>
+              Sports Players Categories
+            </Typography>
+            <IconButton onClick={handleAddRowCategories} sx={{ color: '#3b6fa0', ml: 1 }}>
+              <AddCircleIcon />
+            </IconButton>
+          </Box>
+          {rowsCategories?.map((row: any, index: any) => (
+            <Box key={index} display="flex" gap={2} mb={1}>
+              <Autocomplete
+                value={row.category}
+                disablePortal
+                options={categories}
+                getOptionLabel={(option) => option.name}
+                onChange={(event, newValue) => {
+                  const updatedRows = [...rowsCategories];
+                  updatedRows[index].categoryId = newValue?.id as unknown as number; // Assuming `id` exists in your category
+                  updatedRows[index].category = newValue ?? null as unknown as Category;
+                  setSportTypeInputEdit({ ...sportTypeInputEdit, sportPlayersCategories: updatedRows })   // Storing the full category object
+                  setRowsCategories(updatedRows);
+                }}
+                renderInput={(params) => (
+                  <TextField {...params} label="Category" size="small" sx={{ backgroundColor: 'white', width: "200px" }} />
+                )}
+              />
+              <TextField
+                name="playersCount"
+                size="small"
+                placeholder="Count"
+                type="number"
+                value={row?.playersCount ?? 0}
+                onChange={(e) => handleChangeCategories(index, e)}
+                sx={{ width: '200px', backgroundColor: 'white' }}
+              />
+            </Box>
+          ))}
+
+          {/* Submit Button */}
+          <Box sx={{ display: 'flex', justifyContent: "center", mt: 4 }}>
+            <Button variant="contained" color="primary" onClick={handleEdit} sx={{ fontWeight: '600', px: 4 }}>
+              Edit Sport Type
             </Button>
           </Box>
         </Box>

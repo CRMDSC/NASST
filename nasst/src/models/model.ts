@@ -198,8 +198,14 @@ export interface SportTypeInput {
 export interface UpdateSportTypeInput {
     id: number;
     name: string;
-    playersCount: number;
     teamsCount: number;
+    teamAdminId?: string;
+    teamAdmin?: User;
+    registrationTime: Date;
+    replacementTime: Date;
+    sportPlayersCategories: SportPlayersCategory[];
+    sportAdditionalInfo: AdditionalInformation[];
+    sportDocumentType: DocumentType[];
 }
 
 // ..\NASSTBACKEND\Data\ViewModels\ErrorView.cs
@@ -223,7 +229,6 @@ export interface Result<TPayload> {
     status: number;
     errors: Error[];
 }
-
 
 // ..\NASSTBACKEND\Data\ViewModels\SportTypeView.cs
 export interface SportTypeView {

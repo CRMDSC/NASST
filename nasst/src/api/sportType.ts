@@ -19,7 +19,7 @@ export async function getSportType(id : number) {
     return response.data;
 }
 export async function deleteSportType(id : number) {
-    const response = await request.post<Result<boolean>>(`sporttype/DeleteSportType/`, id);
+    const response = await request.post<Result<boolean>>(`sporttype/DeleteSportType/${id}`);
     return response.data;
 }
 export async function getAllUsers() {

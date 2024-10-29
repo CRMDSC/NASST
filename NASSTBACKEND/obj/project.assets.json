@@ -4950,11 +4950,11 @@
   "project": {
     "version": "1.0.0",
     "restore": {
-      "projectUniqueName": "C:\\dev\\NASST\\NASST\\nasstbackend\\NASSTBACKEND.csproj",
+      "projectUniqueName": "C:\\dev\\NASST\\NASST\\NASSTBACKEND\\NASSTBACKEND.csproj",
       "projectName": "NASSTBACKEND",
-      "projectPath": "C:\\dev\\NASST\\NASST\\nasstbackend\\NASSTBACKEND.csproj",
+      "projectPath": "C:\\dev\\NASST\\NASST\\NASSTBACKEND\\NASSTBACKEND.csproj",
       "packagesPath": "C:\\Users\\o.mneimneh\\.nuget\\packages\\",
-      "outputPath": "C:\\dev\\NASST\\NASST\\nasstbackend\\obj\\",
+      "outputPath": "C:\\dev\\NASST\\NASST\\NASSTBACKEND\\obj\\",
       "projectStyle": "PackageReference",
       "configFilePaths": [
         "C:\\Users\\o.mneimneh\\AppData\\Roaming\\NuGet\\NuGet.Config",
