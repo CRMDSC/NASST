@@ -1,6 +1,6 @@
 import * as React from 'react';
-import { Alert, Box, Button, Divider, IconButton, Table, TableBody, TableCell, TableContainer, TableHead, TableRow, TextField, Typography } from '@mui/material';
-import {Edit, Delete } from '@mui/icons-material';
+import { Alert, Box, Button, Divider, IconButton, Table, TableBody, TableCell, TableContainer, TableHead, TablePagination, TableRow, TextField, Typography } from '@mui/material';
+import { Edit, Delete } from '@mui/icons-material';
 import CircularProgress from '@mui/material/CircularProgress';
 import { useEffect, useState } from 'react';
 import { AdditionalInformation, Category, DocumentType } from '../../models/model';
@@ -41,7 +41,18 @@ const Information = () => {
     const [openEdit, setOpenEdit] = useState(false)
     const [formExpanded, setFormExpanded] = useState(false);
     const [editFormExpanded, setEditFormExpanded] = useState(false);
+    const [page, setPage] = useState(0);
+    const [rowsPerPage, setRowsPerPage] = useState(5);
 
+
+    const handleChangePage = (event: any, newPage: any) => {
+        setPage(newPage);
+    };
+
+    const handleChangeRowsPerPage = (event: any) => {
+        setRowsPerPage(parseInt(event.target.value, 10));
+        setPage(0);
+    };
 
     const handleClickOpen = (id: number) => {
         setDeleteId(id)
@@ -84,7 +95,7 @@ const Information = () => {
             setLoader(false)
         }
     }
-    const filterCategories = information.filter(doc =>
+    const filterInfo = information.filter(doc =>
         doc.name.toLowerCase().includes(filter.toLowerCase())
     );
 
@@ -157,6 +168,7 @@ const Information = () => {
         }
     };
 
+    const paginatedData = filterInfo.slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage);
     return (
         <Box sx={{ padding: 3, display: 'flex', flexDirection: 'row', width: '100%' }}>
             <Box sx={{ padding: 3, display: 'flex', flexDirection: 'column', flexGrow: 3 }}>
@@ -212,12 +224,12 @@ const Information = () => {
                                     </TableRow>
                                 </TableHead>
                                 <TableBody>
-                                    {filterCategories.map((doc) => (
+                                    {paginatedData.map((doc) => (
                                         <TableRow key={doc.id}>
                                             <TableCell>{doc.id}</TableCell>
                                             <TableCell>{doc.name}</TableCell>
                                             <TableCell>
-                                                <IconButton onClick={() =>{ toggleEditForm(doc) }}>
+                                                <IconButton onClick={() => { toggleEditForm(doc) }}>
                                                     <Edit />
                                                 </IconButton>
                                                 <IconButton onClick={() => handleClickOpen(doc.id)}>
@@ -228,6 +240,14 @@ const Information = () => {
                                     ))}
                                 </TableBody>
                             </Table>
+                            <TablePagination
+                                component="div"
+                                count={filterInfo.length}
+                                page={page}
+                                onPageChange={handleChangePage}
+                                rowsPerPage={rowsPerPage}
+                                onRowsPerPageChange={handleChangeRowsPerPage}
+                                rowsPerPageOptions={[5, 10, 25]} />
                         </TableContainer></>
                 }
             </Box>
@@ -245,30 +265,30 @@ const Information = () => {
                         marginRight: "40px",
                         alignItems: "center",
                     }}>
-                      <Box sx={{ display: 'flex', flexDirection: 'column', gap: '18px', marginTop: 6, alignItems:"center" }}>
+                        <Box sx={{ display: 'flex', flexDirection: 'column', gap: '18px', marginTop: 6, alignItems: "center" }}>
                             <Typography sx={{ color: 'rgba(91, 139, 197)', fontSize: "15px" }}>ADD NEW TYPE</Typography>
-                      
-                                <TextField
-                                    variant="outlined"
-                                    placeholder="Information Type"
-                                    value={newInfoType}
-                                    size='small'
-                                   onChange={(e) => setNewInfoType(e.target.value)}
-                                    sx={{ width: '250px', backgroundColor: 'white' }} // White background for the input
-                                />
-                                <Button
-                                    variant="contained"
-                                    color="primary"
-                                    onClick={handleAddInformation}
-                                    sx={{ color: "white", width: "150px" }}
-                                >
-                                    Add
-                                </Button>
-                            </Box>
+
+                            <TextField
+                                variant="outlined"
+                                placeholder="Information Type"
+                                value={newInfoType}
+                                size='small'
+                                onChange={(e) => setNewInfoType(e.target.value)}
+                                sx={{ width: '250px', backgroundColor: 'white' }} // White background for the input
+                            />
+                            <Button
+                                variant="contained"
+                                color="primary"
+                                onClick={handleAddInformation}
+                                sx={{ color: "white", width: "150px" }}
+                            >
+                                Add
+                            </Button>
+                        </Box>
                     </Box>
                 </>
             )}
-             {editFormExpanded && (
+            {editFormExpanded && (
                 <>
                     <Divider orientation="vertical" flexItem sx={{ margin: 2 }} /> {/* Vertical Divider */}
                     <Box sx={{
@@ -282,26 +302,26 @@ const Information = () => {
                         marginRight: "40px",
                         alignItems: "center",
                     }}>
-                      <Box sx={{ display: 'flex', flexDirection: 'column', gap: '18px', marginTop: 6, alignItems:"center" }}>
+                        <Box sx={{ display: 'flex', flexDirection: 'column', gap: '18px', marginTop: 6, alignItems: "center" }}>
                             <Typography sx={{ color: 'rgba(91, 139, 197)', fontSize: "15px" }}>ADD NEW CATEGORY</Typography>
-                      
-                                <TextField
-                                    variant="outlined"
-                                    placeholder="Category Name"
-                                    value={editName}
-                                    size='small'
-                                    onChange={(e) => setEditName(e.target.value)}
-                                    sx={{ width: '250px', backgroundColor: 'white' }} // White background for the input
-                                />
-                                <Button
-                                    variant="contained"
-                                    color="primary"
-                                    onClick={handleEdit}
-                                    sx={{ color: "white", width: "150px" }}
-                                >
-                                    SAVE
-                                </Button>
-                            </Box>
+
+                            <TextField
+                                variant="outlined"
+                                placeholder="Category Name"
+                                value={editName}
+                                size='small'
+                                onChange={(e) => setEditName(e.target.value)}
+                                sx={{ width: '250px', backgroundColor: 'white' }} // White background for the input
+                            />
+                            <Button
+                                variant="contained"
+                                color="primary"
+                                onClick={handleEdit}
+                                sx={{ color: "white", width: "150px" }}
+                            >
+                                SAVE
+                            </Button>
+                        </Box>
                     </Box>
                 </>
             )}

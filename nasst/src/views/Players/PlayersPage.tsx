@@ -1,5 +1,5 @@
 import * as React from 'react';
-import { Alert, Box, Button, Divider, IconButton, Table, TableBody, TableCell, TableContainer, TableHead, TableRow, TextField, Typography } from '@mui/material';
+import { Alert, Box, Button, Divider, IconButton, Table, TableBody, TableCell, TableContainer, TableHead, TablePagination, TableRow, TextField, Typography } from '@mui/material';
 import { Add, Edit, Delete } from '@mui/icons-material';
 import CircularProgress from '@mui/material/CircularProgress';
 import { useEffect, useState } from 'react';
@@ -56,6 +56,18 @@ const Players = () => {
   const [successMessage, setSuccessMessage] = useState('');
   const [formExpanded, setFormExpanded] = useState(false);
   const [editFormExpanded, setEditFormExpanded] = useState(false);
+  const [page, setPage] = useState(0);
+  const [rowsPerPage, setRowsPerPage] = useState(5);
+
+
+  const handleChangePage = (event: any, newPage: any) => {
+    setPage(newPage);
+  };
+
+  const handleChangeRowsPerPage = (event: any) => {
+    setRowsPerPage(parseInt(event.target.value, 10));
+    setPage(0);
+  };
 
   useEffect(() => {
     fetchData();
@@ -180,6 +192,8 @@ const Players = () => {
       }
     }
   };
+
+  const paginatedData = filteredPlayers.slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage);
   return (
     <Box sx={{ padding: 3, display: 'flex', flexDirection: 'row', width: '100%' }}>
       {/* Table Section */}
@@ -240,7 +254,7 @@ const Players = () => {
                     </TableRow>
                   </TableHead>
                   <TableBody>
-                    {filteredPlayers.map((player) => (
+                    {paginatedData.map((player) => (
                       <TableRow key={player.id}>
                         <TableCell>{player.id}</TableCell>
                         <TableCell>{player.firstName}</TableCell>
@@ -260,7 +274,15 @@ const Players = () => {
                     ))}
                   </TableBody>
                 </Table>
-              </TableContainer>
+                <TablePagination
+                component="div"
+                count={filteredPlayers.length}
+                page={page}
+                onPageChange={handleChangePage}
+                rowsPerPage={rowsPerPage}
+                onRowsPerPageChange={handleChangeRowsPerPage}
+                rowsPerPageOptions={[5, 10, 25]} />
+            </TableContainer>
             )}
           </>
         )}
