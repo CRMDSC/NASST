@@ -35,13 +35,13 @@ namespace NASSTBACKEND.Services.General
 
         public async Task<Result<LoginView>> Login(LoginInput input, string ipAddress)
         {
-            var user = await userManager.FindByEmailAsync(input.Email);
+            var user = await userManager.FindByEmailAsync(input.Email ?? "");
             if (user == null || user.IsArchived)
             {
                 return Result.BadRequest<LoginView>().With(Error.NotFound("No user with this email was found", path: input.Email));
             }
 
-            var signInResult = await signInManager.CheckPasswordSignInAsync(user, input.Password, false);
+            var signInResult = await signInManager.CheckPasswordSignInAsync(user, input.Password ?? "", false);
             if (!signInResult.Succeeded)
             {
                 return Result.BadRequest<LoginView>().With(Error.IncorrectPassword());
@@ -60,10 +60,10 @@ namespace NASSTBACKEND.Services.General
 
             return new LoginView
             {
-                AccessToken = new JwtSecurityTokenHandler().WriteToken(token),
-                AccessTokenExpiresIn = (int)(token.ValidTo - DateTime.UtcNow).TotalSeconds,
-                RefreshTokenExpiresIn = refreshToken.Expires != null ? (int)((DateTime)refreshToken.Expires - DateTime.UtcNow).TotalDays + 1 : -1,
-                RefreshToken = refreshToken.Token,
+                AccessToken = new JwtSecurityTokenHandler().WriteToken(token.Payload),
+                AccessTokenExpiresIn = (int)(token.Payload.ValidTo - DateTime.UtcNow).TotalSeconds,
+                RefreshTokenExpiresIn = refreshToken.Payload.Expires != null ? (int)((DateTime)refreshToken.Payload.Expires - DateTime.UtcNow).TotalDays + 1 : -1,
+                RefreshToken = refreshToken.Payload.Token,
             };
         }
 
@@ -86,11 +86,11 @@ namespace NASSTBACKEND.Services.General
             if (!refreshToken.IsActive)
             {
                 if (string.IsNullOrEmpty(refreshToken.ReplacedByToken))
-                    return null;
+                    return Result.NotFound<LoginView>().With(Error.NotFound("Replace token is null", path: token));
                 else if (DateTime.UtcNow - refreshToken.Revoked < new TimeSpan(0, 0, 10))
                     return Result.Conflict<LoginView>().With(Error.Conflict("Token already create", path: token));
                 else
-                    return null;
+                    return Result.NotFound<LoginView>().With(Error.NotAcceptable("Something went wrong, please contact the administrator", path: token));
             }
             var newRefreshToken = await GenerateRefreshToken(user, ipAddress);
             if (newRefreshToken == null)
@@ -99,7 +99,7 @@ namespace NASSTBACKEND.Services.General
             }
             refreshToken.Revoked = DateTime.UtcNow;
             refreshToken.RevokedByIp = ipAddress;
-            refreshToken.ReplacedByToken = newRefreshToken.Token;
+            refreshToken.ReplacedByToken = newRefreshToken.Payload.Token;
 
             await context.SaveChangesAsync();
 
@@ -107,10 +107,10 @@ namespace NASSTBACKEND.Services.General
 
             return new LoginView
             {
-                AccessToken = new JwtSecurityTokenHandler().WriteToken(jwtToken),
-                AccessTokenExpiresIn = (int)(jwtToken.ValidTo - DateTime.UtcNow).TotalSeconds,
-                RefreshTokenExpiresIn = newRefreshToken.Expires != null ? (int)((DateTime)newRefreshToken.Expires - DateTime.UtcNow).TotalDays + 1 : -1,
-                RefreshToken = newRefreshToken.Token,
+                AccessToken = new JwtSecurityTokenHandler().WriteToken(jwtToken.Payload),
+                AccessTokenExpiresIn = (int)(jwtToken.Payload.ValidTo - DateTime.UtcNow).TotalSeconds,
+                RefreshTokenExpiresIn = newRefreshToken.Payload.Expires != null ? (int)((DateTime)newRefreshToken.Payload.Expires - DateTime.UtcNow).TotalDays + 1 : -1,
+                RefreshToken = newRefreshToken.Payload.Token,
             };
         }
 
@@ -124,7 +124,7 @@ namespace NASSTBACKEND.Services.General
             }
             return new string(key);
         }
-        private async Task<UserRefreshToken> GenerateRefreshToken(User user, string ipAddress)
+        private async Task<Result<UserRefreshToken>> GenerateRefreshToken(User user, string ipAddress)
         {
             var noSpaceCharacters = "_ABCDEFGHIJKLMNOPRSTUVWXYZabcdefghijklmnoprstuvwxyz0123456789";
             var refreshToken = new UserRefreshToken
@@ -143,11 +143,11 @@ namespace NASSTBACKEND.Services.General
             catch (DbUpdateConcurrencyException ex)
             {
                 await Console.Out.WriteLineAsync("Refresh Token DbUpdateConcurrencyException: " + ex.Message);
-                return null;
+                return Result.NotFound<UserRefreshToken>().With(Error.NotAcceptable("Something went wrong, please contact the administrator"));
             }
             return refreshToken;
         }
-        private async Task<JwtSecurityToken> GenerateJwtTokenAsync(User user)
+        private async Task<Result<JwtSecurityToken>> GenerateJwtTokenAsync(User user)
         {
             try
             {
@@ -160,7 +160,7 @@ namespace NASSTBACKEND.Services.General
             catch (Exception ex)
             {
                 Console.WriteLine(ex.Message);
-                return null;
+                return Result.NotFound<JwtSecurityToken>().With(Error.NotAcceptable("Something went wrong, please contact the administrator"));
             }
         }
 
@@ -183,10 +183,10 @@ namespace NASSTBACKEND.Services.General
                 return Result.NotFound<User>().With(Error.NotFound("Role is not defined"));
             }
 
-            var createUser = await userManager.CreateAsync(newUser, input.Password);
+            var createUser = await userManager.CreateAsync(newUser, input.Password ?? "");
             if (!createUser.Succeeded)
             {
-                return Result.Conflict<User>().With(Error.InvalidParameter(createUser.Errors.FirstOrDefault().Description.ToString()));
+                return Result.Conflict<User>().With(Error.InvalidParameter("Invalid parameters."));
             }
             //include sending emails when regsitering
             await userManager.AddToRoleAsync(newUser, input.Role);
@@ -228,7 +228,7 @@ namespace NASSTBACKEND.Services.General
             }
             else
             {
-                return Result.NotFound<User>().With(Error.NotFound("User not found", user.UserName));
+                return Result.NotFound<User>().With(Error.NotFound("User not found", user.UserName ?? ""));
             }
         }
 
@@ -236,18 +236,47 @@ namespace NASSTBACKEND.Services.General
         {
             var user = await context.Users.Where(u => u.Id == userId && u.IsArchived == false).FirstOrDefaultAsync();
             var userRole = await context.UserRoles.Where(u => u.UserId == userId).FirstOrDefaultAsync();
-            var role = await context.Roles.Where(r => r.Id == userRole.RoleId).FirstOrDefaultAsync();
-
-            var userview = new UserView
+            var role = new Role { };
+            if (userRole != null)
             {
-                userId = user.Id,
-                Email = user.Email,
-                FullName = user.FullName,
-                FirstName = user.FirstName,
-                LastName = user.LastName,
-                role = role.Name
-            };
-            return userview;
+                role = await context.Roles.Where(r => r.Id == userRole.RoleId).FirstOrDefaultAsync();
+
+            }
+            if (user != null)
+            {
+                if (role != null)
+                {
+                    var userview = new UserView
+                    {
+                        userId = user.Id,
+                        Email = user.Email ?? "",
+                        FullName = user.FullName ?? "",
+                        FirstName = user.FirstName ?? "",
+                        LastName = user.LastName ?? "",
+                        role = role.Name ?? ""
+                    };
+                    return userview;
+
+                }
+                else
+                {
+                    var userview = new UserView
+                    {
+                        userId = user.Id,
+                        Email = user.Email ?? "",
+                        FullName = user.FullName ?? "",
+                        FirstName = user.FirstName ?? "",
+                        LastName = user.LastName ?? "",
+                        role = ""
+                    };
+                    return userview;
+                }
+
+            }
+            else
+            {
+                return Result.NotFound<UserView>().With(Error.NotFound("User not found"));
+            }
         }
 
         public async Task<Result<List<UserView>>> GetAllUsers()
@@ -256,18 +285,22 @@ namespace NASSTBACKEND.Services.General
             var usersView = new List<UserView>();
             foreach (var user in users)
             {
-                var userview = new UserView
-
+                if (user != null)
                 {
-                    userId = user.Id,
-                    Email = user.Email,
-                    FullName = user.FullName,
-                    FirstName = user.FirstName,
-                    LastName = user.LastName,
-                    role = ""
-                };
+                    var userview = new UserView
 
-                usersView.Add(userview);
+                    {
+                        userId = user.Id,
+                        Email = user.Email ?? "",
+                        FullName = user.FullName ?? "",
+                        FirstName = user.FirstName ?? "",
+                        LastName = user.LastName ?? "",
+                        role = ""
+                    };
+
+                    usersView.Add(userview);
+
+                }
             }
             return usersView;
         }

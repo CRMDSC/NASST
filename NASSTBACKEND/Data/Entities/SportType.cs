@@ -3,7 +3,7 @@ namespace NASSTBACKEND.Data.Entities
      public class SportType 
     {
         public int Id { get; set; }
-        public string Name { get; set; }
+        public required string Name { get; set; }
         public int MaxTeams { get; set; }
         public bool IsArchived { get; set; }
         public string? CreatedById { get; set; }

@@ -45,7 +45,7 @@ namespace NASSTBACKEND.Controllers
             {
                 await context.Logs.AddAsync(new Log
                 {
-                    CreatedById = loggedInUser.Id,
+                    CreatedById = loggedInUser == null ? "" : loggedInUser.Id,
                     CreatedAt = DateTime.UtcNow,
                     Message = "Faild to add additional information",
                     StackTrace = ex.StackTrace,
@@ -76,7 +76,7 @@ namespace NASSTBACKEND.Controllers
             {
                 await context.Logs.AddAsync(new Log
                 {
-                    CreatedById = loggedInUser.Id,
+                    CreatedById = loggedInUser == null ? "" : loggedInUser.Id,
                     CreatedAt = DateTime.UtcNow,
                     Message = "Faild to get categories",
                     StackTrace = ex.StackTrace,
@@ -107,7 +107,7 @@ namespace NASSTBACKEND.Controllers
             {
                 await context.Logs.AddAsync(new Log
                 {
-                    CreatedById = loggedInUser.Id,
+                    CreatedById = loggedInUser == null ? "" : loggedInUser.Id,
                     CreatedAt = DateTime.UtcNow,
                     Message = "Faild to get information",
                     StackTrace = ex.StackTrace,
@@ -138,7 +138,7 @@ namespace NASSTBACKEND.Controllers
             {
                 await context.Logs.AddAsync(new Log
                 {
-                    CreatedById = loggedInUser.Id,
+                    CreatedById = loggedInUser == null ? "" : loggedInUser.Id,
                     CreatedAt = DateTime.UtcNow,
                     Message = "Faild to delete information",
                     StackTrace = ex.StackTrace,
@@ -169,7 +169,7 @@ namespace NASSTBACKEND.Controllers
             {
                 await context.Logs.AddAsync(new Log
                 {
-                    CreatedById = loggedInUser.Id,
+                    CreatedById = loggedInUser == null ? "" : loggedInUser.Id,
                     CreatedAt = DateTime.UtcNow,
                     Message = "Faild to update information",
                     StackTrace = ex.StackTrace,

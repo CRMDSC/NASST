@@ -6,7 +6,7 @@ namespace NASSTBACKEND.Options
 {
    public class AppConfiguration
     {
-        public string AdminEmail { get; set; }
+        public string? AdminEmail { get; set; }
 
     }
 }

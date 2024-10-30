@@ -140,17 +140,17 @@ namespace NASSTBACKEND.Services.General
                 sportType.IsArchived = true;
             }
             var sportDocs = await context.SportDocumentTypes.Where(s => s.SportTypeId == id).ToListAsync();
-            foreach(var doc in sportDocs)
+            foreach (var doc in sportDocs)
             {
                 doc.IsArchived = true;
             }
             var sportInfo = await context.SportAdditionalInformation.Where(s => s.SportTypeId == id).ToListAsync();
-            foreach(var info in sportInfo)
+            foreach (var info in sportInfo)
             {
                 info.IsArchived = true;
             }
             var sportsPlayersCategory = await context.SportPlayersCategories.Where(s => s.SportTypeId == id).ToListAsync();
-            foreach(var cat in sportsPlayersCategory)
+            foreach (var cat in sportsPlayersCategory)
             {
                 cat.IsArchived = true;
             }
@@ -169,7 +169,9 @@ namespace NASSTBACKEND.Services.General
                     return Result.BadRequest<bool>().With(Error.InvalidParameter("Sport type not found."));
                 }
 
+#pragma warning disable CS8601 // Possible null reference assignment.
                 sportType.Name = input.Name;
+#pragma warning restore CS8601 // Possible null reference assignment.
                 sportType.MaxTeams = input.TeamsCount;
                 sportType.TeamAdmin = TeamAdmin;
                 sportType.TeamAdminId = input.TeamAdminId;
@@ -181,19 +183,22 @@ namespace NASSTBACKEND.Services.General
                     var existingAdditionalInfo = await context.SportAdditionalInformation.Where(s => s.SportTypeId == sportType.Id && !s.IsArchived).ToListAsync();
                     foreach (var existingInfo in existingAdditionalInfo)
                     {
-                         context.SportAdditionalInformation.Remove(existingInfo);  
+                        context.SportAdditionalInformation.Remove(existingInfo);
                     }
                     foreach (var addInfo in input.SportAdditionalInfo)
                     {
                         var information = await context.AdditionalInformation.Where(a => a.Id == addInfo.Id && !a.IsArchived).FirstOrDefaultAsync();
-                        var newSportAdditionalInfo = new SportAdditionalInfo
+                        if (information != null)
                         {
-                            AdditionalInformation = information,
-                            AdditionalInformationId = information.Id,
-                            SportTypeId = sportType.Id,
-                            SportType = sportType
-                        };
-                        await context.SportAdditionalInformation.AddAsync(newSportAdditionalInfo);
+                            var newSportAdditionalInfo = new SportAdditionalInfo
+                            {
+                                AdditionalInformation = information,
+                                AdditionalInformationId = information.Id,
+                                SportTypeId = sportType.Id,
+                                SportType = sportType
+                            };
+                            await context.SportAdditionalInformation.AddAsync(newSportAdditionalInfo);
+                        }
                     }
                 }
 
@@ -207,15 +212,19 @@ namespace NASSTBACKEND.Services.General
                     foreach (var doc in input.SportDocumentType)
                     {
                         var newDoc = await context.DocumentTypes.Where(d => d.Id == doc.Id && !d.IsArchived).FirstOrDefaultAsync();
-                        var newSportDocument = new SportDocumentType
+                        if (newDoc != null)
                         {
-                            DocumentType = newDoc,
-                            DocumentTypeId = newDoc.Id,
-                            IsArchived = false,
-                            SportType = sportType,
-                            SportTypeId = sportType.Id 
-                        };
-                        await context.SportDocumentTypes.AddAsync(newSportDocument);
+                            var newSportDocument = new SportDocumentType
+                            {
+                                DocumentType = newDoc,
+                                DocumentTypeId = newDoc.Id,
+                                IsArchived = false,
+                                SportType = sportType,
+                                SportTypeId = sportType.Id
+                            };
+                            await context.SportDocumentTypes.AddAsync(newSportDocument);
+
+                        }
                     }
                 }
 
@@ -277,24 +286,29 @@ namespace NASSTBACKEND.Services.General
         public async Task<Result<SportTypeView>> GetSportTypeById(int id)
         {
             var sportType = await context.SportTypes.Where(s => s.Id == id && !s.IsArchived).Include(s => s.TeamAdmin).FirstOrDefaultAsync();
-            var playersCategories = await context.SportPlayersCategories.Where(s => s.SportTypeId == sportType.Id).Include(s => s.Category).ToListAsync();
-            var playersInformation = await context.SportAdditionalInformation.Where(s => s.SportTypeId == sportType.Id).Include(s => s.AdditionalInformation).ToListAsync();
-            var playersDocs = await context.SportDocumentTypes.Where(s => s.SportTypeId == sportType.Id).Include(s => s.DocumentType).ToListAsync();
-
-            var sportTypeView = new SportTypeView
+            if (sportType != null)
             {
-                Id = sportType.Id,
-                Name = sportType.Name,
-                TeamsCount = sportType.MaxTeams,
-                RegistrationTime = sportType.RegistrationTime,
-                ReplacementTime = sportType.ReplacementTime,
-                TeamAdmin = sportType.TeamAdmin,
-                SportAdditionalInfo = playersInformation,
-                SportDocumentType = playersDocs,
-                SportPlayersCategories = playersCategories,
-                TeamAdminId = sportType.TeamAdminId
-            };
-            return sportTypeView;
+                var playersCategories = await context.SportPlayersCategories.Where(s => s.SportTypeId == sportType.Id).Include(s => s.Category).ToListAsync();
+                var playersInformation = await context.SportAdditionalInformation.Where(s => s.SportTypeId == sportType.Id).Include(s => s.AdditionalInformation).ToListAsync();
+                var playersDocs = await context.SportDocumentTypes.Where(s => s.SportTypeId == sportType.Id).Include(s => s.DocumentType).ToListAsync();
+
+                var sportTypeView = new SportTypeView
+                {
+                    Id = sportType.Id,
+                    Name = sportType.Name,
+                    TeamsCount = sportType.MaxTeams,
+                    RegistrationTime = sportType.RegistrationTime,
+                    ReplacementTime = sportType.ReplacementTime,
+                    TeamAdmin = sportType.TeamAdmin,
+                    SportAdditionalInfo = playersInformation,
+                    SportDocumentType = playersDocs,
+                    SportPlayersCategories = playersCategories,
+                    TeamAdminId = sportType.TeamAdminId
+                };
+                return sportTypeView;
+
+            }
+            return Result.BadRequest<SportTypeView>().With(Error.InvalidParameter("Something went wrong, please contact the administrator."));
         }
     }
 }

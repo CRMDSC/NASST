@@ -41,17 +41,32 @@ namespace NASSTBACKEND.Services.General
         public async Task<Result<bool>> DeleteAdditionalInformation(int id)
         {
             var info = await context.AdditionalInformation.Where(i => i.Id == id).FirstOrDefaultAsync();
-            info.IsArchived = true;
-            await context.SaveChangesAsync();
-            return true;
+            if (info != null)
+            {
+                info.IsArchived = true;
+                await context.SaveChangesAsync();
+                return Result.Ok<bool>();
+
+            }
+            else
+            {
+                return Result.BadRequest<bool>().With(Error.NotAcceptable("Something went wrong please contact the administrator."));
+            }
         }
 
         public async Task<Result<bool>> EditAdditionalInformation(AdditionalInformation input)
         {
             var info = await context.AdditionalInformation.Where(c => c.Id == input.Id).FirstOrDefaultAsync();
-            info.Name = input.Name;
-            await context.SaveChangesAsync();
-            return true;
+            if (info != null)
+            {
+                info.Name = input.Name;
+                await context.SaveChangesAsync();
+                return Result.Ok<bool>();
+            }
+            else
+            {
+                return Result.BadRequest<bool>().With(Error.NotAcceptable("Something went wrong please contact the administrator."));
+            }
         }
 
         public async Task<Result<List<AdditionalInformation>>> GetAdditionalInformation()
@@ -62,8 +77,12 @@ namespace NASSTBACKEND.Services.General
 
         public async Task<Result<AdditionalInformation>> GetAdditionalInformationById(int id)
         {
-           var info = await context.AdditionalInformation.Where(c => c.Id == id).FirstOrDefaultAsync();
-            return info;
+            var info = await context.AdditionalInformation.Where(c => c.Id == id).FirstOrDefaultAsync();
+            if(info != null)
+            {
+                return info;
+            }
+            return Result.BadRequest<AdditionalInformation>().With(Error.NotFound("Additional Information not found."));
         }
     }
 }
