@@ -11,5 +11,6 @@ namespace NASSTBACKEND.Services.Interfaces
         Task<Result<User>> Logout(User user, string ipAddress, string refreshToken = "");
         Task<Result<LoginView>> RefreshToken(string token, string ipAddress);
         Task<Result<UserView>> GetLoggedInUser (string userId);
+        Task<Result<List<UserView>>> GetAllUsers ();
     }
 }

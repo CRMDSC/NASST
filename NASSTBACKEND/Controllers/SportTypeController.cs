@@ -71,7 +71,7 @@ namespace NASSTBACKEND.Controllers
             var loggedInUser = await userManager.GetUserAsync(User);
             try
             {
-                var result = await sportTypeService.EditSportType(input, loggedInUser);
+                var result = await sportTypeService.EditSportType(input);
 
                 return result.ToActionResult();
             }
@@ -160,9 +160,9 @@ namespace NASSTBACKEND.Controllers
             }
         }
         [Authorize("Admin")]
-        [HttpPost("DeleteSportType")]
+        [HttpPost("DeleteSportType/{id}")]
         [Produces(typeof(Result<bool>))]
-        public async Task<IActionResult> DeleteSportType([FromBody] int id )
+        public async Task<IActionResult> DeleteSportType([FromRoute] int id )
         {
             var loggedInUser = await userManager.GetUserAsync(User);
             try

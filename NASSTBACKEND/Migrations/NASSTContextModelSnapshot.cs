@@ -328,6 +328,87 @@ namespace NASSTBACKEND.Migrations
                     b.ToTable("AspNetRoles", (string)null);
                 });
 
+            modelBuilder.Entity("NASSTBACKEND.Data.Entities.SportAdditionalInfo", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int");
+
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
+
+                    b.Property<int>("AdditionalInformationId")
+                        .HasColumnType("int");
+
+                    b.Property<bool>("IsArchived")
+                        .HasColumnType("bit");
+
+                    b.Property<int>("SportTypeId")
+                        .HasColumnType("int");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("AdditionalInformationId");
+
+                    b.HasIndex("SportTypeId");
+
+                    b.ToTable("SportAdditionalInformation");
+                });
+
+            modelBuilder.Entity("NASSTBACKEND.Data.Entities.SportDocumentType", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int");
+
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
+
+                    b.Property<int>("DocumentTypeId")
+                        .HasColumnType("int");
+
+                    b.Property<bool>("IsArchived")
+                        .HasColumnType("bit");
+
+                    b.Property<int>("SportTypeId")
+                        .HasColumnType("int");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("DocumentTypeId");
+
+                    b.HasIndex("SportTypeId");
+
+                    b.ToTable("SportDocumentTypes");
+                });
+
+            modelBuilder.Entity("NASSTBACKEND.Data.Entities.SportPlayersCategory", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int");
+
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
+
+                    b.Property<int>("CategoryId")
+                        .HasColumnType("int");
+
+                    b.Property<bool>("IsArchived")
+                        .HasColumnType("bit");
+
+                    b.Property<int>("PlayersCount")
+                        .HasColumnType("int");
+
+                    b.Property<int>("SportTypeId")
+                        .HasColumnType("int");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("CategoryId");
+
+                    b.HasIndex("SportTypeId");
+
+                    b.ToTable("SportPlayersCategories");
+                });
+
             modelBuilder.Entity("NASSTBACKEND.Data.Entities.SportType", b =>
                 {
                     b.Property<int>("Id")
@@ -342,15 +423,21 @@ namespace NASSTBACKEND.Migrations
                     b.Property<bool>("IsArchived")
                         .HasColumnType("bit");
 
+                    b.Property<int>("MaxTeams")
+                        .HasColumnType("int");
+
                     b.Property<string>("Name")
                         .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
-                    b.Property<int>("PlayersCount")
-                        .HasColumnType("int");
+                    b.Property<DateTime>("RegistrationTime")
+                        .HasColumnType("datetime2");
 
-                    b.Property<int>("TeamsCount")
-                        .HasColumnType("int");
+                    b.Property<DateTime>("ReplacementTime")
+                        .HasColumnType("datetime2");
+
+                    b.Property<string>("TeamAdminId")
+                        .HasColumnType("nvarchar(450)");
 
                     b.Property<string>("UpdatedById")
                         .HasColumnType("nvarchar(450)");
@@ -358,6 +445,8 @@ namespace NASSTBACKEND.Migrations
                     b.HasKey("Id");
 
                     b.HasIndex("CreatedById");
+
+                    b.HasIndex("TeamAdminId");
 
                     b.HasIndex("UpdatedById");
 
@@ -603,17 +692,80 @@ namespace NASSTBACKEND.Migrations
                     b.Navigation("UpdatedBy");
                 });
 
+            modelBuilder.Entity("NASSTBACKEND.Data.Entities.SportAdditionalInfo", b =>
+                {
+                    b.HasOne("NASSTBACKEND.Data.Entities.AdditionalInformation", "AdditionalInformation")
+                        .WithMany()
+                        .HasForeignKey("AdditionalInformationId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.HasOne("NASSTBACKEND.Data.Entities.SportType", "SportType")
+                        .WithMany()
+                        .HasForeignKey("SportTypeId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.Navigation("AdditionalInformation");
+
+                    b.Navigation("SportType");
+                });
+
+            modelBuilder.Entity("NASSTBACKEND.Data.Entities.SportDocumentType", b =>
+                {
+                    b.HasOne("NASSTBACKEND.Data.Entities.DocumentType", "DocumentType")
+                        .WithMany()
+                        .HasForeignKey("DocumentTypeId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.HasOne("NASSTBACKEND.Data.Entities.SportType", "SportType")
+                        .WithMany()
+                        .HasForeignKey("SportTypeId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.Navigation("DocumentType");
+
+                    b.Navigation("SportType");
+                });
+
+            modelBuilder.Entity("NASSTBACKEND.Data.Entities.SportPlayersCategory", b =>
+                {
+                    b.HasOne("NASSTBACKEND.Data.Entities.Category", "Category")
+                        .WithMany()
+                        .HasForeignKey("CategoryId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.HasOne("NASSTBACKEND.Data.Entities.SportType", "SportType")
+                        .WithMany()
+                        .HasForeignKey("SportTypeId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.Navigation("Category");
+
+                    b.Navigation("SportType");
+                });
+
             modelBuilder.Entity("NASSTBACKEND.Data.Entities.SportType", b =>
                 {
                     b.HasOne("NASSTBACKEND.Data.Entities.User", "CreatedBy")
                         .WithMany()
                         .HasForeignKey("CreatedById");
 
+                    b.HasOne("NASSTBACKEND.Data.Entities.User", "TeamAdmin")
+                        .WithMany()
+                        .HasForeignKey("TeamAdminId");
+
                     b.HasOne("NASSTBACKEND.Data.Entities.User", "UpdatedBy")
                         .WithMany()
                         .HasForeignKey("UpdatedById");
 
                     b.Navigation("CreatedBy");
+
+                    b.Navigation("TeamAdmin");
 
                     b.Navigation("UpdatedBy");
                 });

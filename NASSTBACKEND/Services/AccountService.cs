@@ -10,7 +10,6 @@ using NASSTBACKEND.Data.Entities;
 using NASSTBACKEND.Data;
 using NASSTBACKEND.Options;
 
-
 namespace NASSTBACKEND.Services.General
 {
     public class AccountService : IAccountService
@@ -249,6 +248,28 @@ namespace NASSTBACKEND.Services.General
                 role = role.Name
             };
             return userview;
+        }
+
+        public async Task<Result<List<UserView>>> GetAllUsers()
+        {
+            var users = await context.Users.Where(u => u.IsArchived == false).ToListAsync();
+            var usersView = new List<UserView>();
+            foreach (var user in users)
+            {
+                var userview = new UserView
+
+                {
+                    userId = user.Id,
+                    Email = user.Email,
+                    FullName = user.FullName,
+                    FirstName = user.FirstName,
+                    LastName = user.LastName,
+                    role = ""
+                };
+
+                usersView.Add(userview);
+            }
+            return usersView;
         }
     }
 }

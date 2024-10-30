@@ -1,6 +1,6 @@
 import * as React from 'react';
-import { Alert, Box, Button, Divider, IconButton, Table, TableBody, TableCell, TableContainer, TableHead, TableRow, TextField, Typography } from '@mui/material';
-import {Edit, Delete } from '@mui/icons-material';
+import { Alert, Box, Button, Divider, IconButton, Table, TableBody, TableCell, TableContainer, TableHead, TablePagination, TableRow, TextField, Typography } from '@mui/material';
+import { Edit, Delete } from '@mui/icons-material';
 import CircularProgress from '@mui/material/CircularProgress';
 import { useEffect, useState } from 'react';
 import { Category } from '../../models/model';
@@ -39,7 +39,17 @@ const Categories = () => {
     const [openEdit, setOpenEdit] = useState(false)
     const [formExpanded, setFormExpanded] = useState(false);
     const [editFormExpanded, setEditFormExpanded] = useState(false);
+    const [page, setPage] = useState(0);
+    const [rowsPerPage, setRowsPerPage] = useState(5);
 
+    const handleChangePage = (event: any, newPage: any) => {
+        setPage(newPage);
+    };
+
+    const handleChangeRowsPerPage = (event: any) => {
+        setRowsPerPage(parseInt(event.target.value, 10));
+        setPage(0);
+    };
 
     const handleClickOpen = (id: number) => {
         setDeleteId(id)
@@ -156,9 +166,10 @@ const Categories = () => {
         }
     };
 
+    const paginatedData = filterCategories.slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage);
     return (
-        <Box sx={{ padding: 3, display: 'flex', flexDirection: 'row', width: '100%' }}>
-            <Box sx={{ padding: 3, display: 'flex', flexDirection: 'column', flexGrow: 3 }}>
+        <Box sx={{ padding: 3, display: 'flex', flexDirection: 'row', width: '100%', overflowY: 'hidden' }}>
+            <Box sx={{ padding: 3, display: 'flex', flexDirection: 'column', flexGrow: 3, overflowY: 'hidden' }}>
                 <Dialog
                     open={openDelete}
                     TransitionComponent={Transition}
@@ -211,12 +222,12 @@ const Categories = () => {
                                     </TableRow>
                                 </TableHead>
                                 <TableBody>
-                                    {filterCategories.map((cat) => (
+                                    {paginatedData.map((cat) => (
                                         <TableRow key={cat.id}>
                                             <TableCell>{cat.id}</TableCell>
                                             <TableCell>{cat.name}</TableCell>
                                             <TableCell>
-                                                <IconButton onClick={() =>{ toggleEditForm(cat) }}>
+                                                <IconButton onClick={() => { toggleEditForm(cat) }}>
                                                     <Edit />
                                                 </IconButton>
                                                 <IconButton onClick={() => handleClickOpen(cat.id)}>
@@ -227,6 +238,14 @@ const Categories = () => {
                                     ))}
                                 </TableBody>
                             </Table>
+                            <TablePagination
+                                component="div"
+                                count={filterCategories.length}
+                                page={page}
+                                onPageChange={handleChangePage}
+                                rowsPerPage={rowsPerPage}
+                                onRowsPerPageChange={handleChangeRowsPerPage}
+                                rowsPerPageOptions={[5, 10, 25]} />
                         </TableContainer></>
                 }
             </Box>
@@ -244,30 +263,30 @@ const Categories = () => {
                         marginRight: "40px",
                         alignItems: "center",
                     }}>
-                      <Box sx={{ display: 'flex', flexDirection: 'column', gap: '18px', marginTop: 6, alignItems:"center" }}>
+                        <Box sx={{ display: 'flex', flexDirection: 'column', gap: '18px', marginTop: 6, alignItems: "center" }}>
                             <Typography sx={{ color: 'rgba(91, 139, 197)', fontSize: "15px" }}>ADD NEW CATEGORY</Typography>
-                      
-                                <TextField
-                                    variant="outlined"
-                                    placeholder="Category Name"
-                                    value={newCategoryName}
-                                    size='small'
-                                    onChange={(e) => setNewCategoryName(e.target.value)}
-                                    sx={{ width: '250px', backgroundColor: 'white' }} // White background for the input
-                                />
-                                <Button
-                                    variant="contained"
-                                    color="primary"
-                                    onClick={handleAddCategory}
-                                    sx={{ color: "white", width: "150px" }}
-                                >
-                                    Add
-                                </Button>
-                            </Box>
+
+                            <TextField
+                                variant="outlined"
+                                placeholder="Category Name"
+                                value={newCategoryName}
+                                size='small'
+                                onChange={(e) => setNewCategoryName(e.target.value)}
+                                sx={{ width: '250px', backgroundColor: 'white' }} // White background for the input
+                            />
+                            <Button
+                                variant="contained"
+                                color="primary"
+                                onClick={handleAddCategory}
+                                sx={{ color: "white", width: "150px" }}
+                            >
+                                Add
+                            </Button>
+                        </Box>
                     </Box>
                 </>
             )}
-             {editFormExpanded && (
+            {editFormExpanded && (
                 <>
                     <Divider orientation="vertical" flexItem sx={{ margin: 2 }} /> {/* Vertical Divider */}
                     <Box sx={{
@@ -281,26 +300,26 @@ const Categories = () => {
                         marginRight: "40px",
                         alignItems: "center",
                     }}>
-                      <Box sx={{ display: 'flex', flexDirection: 'column', gap: '18px', marginTop: 6, alignItems:"center" }}>
+                        <Box sx={{ display: 'flex', flexDirection: 'column', gap: '18px', marginTop: 6, alignItems: "center" }}>
                             <Typography sx={{ color: 'rgba(91, 139, 197)', fontSize: "15px" }}>ADD NEW CATEGORY</Typography>
-                      
-                                <TextField
-                                    variant="outlined"
-                                    placeholder="Category Name"
-                                    value={editName}
-                                    size='small'
-                                    onChange={(e) => setEditName(e.target.value)}
-                                    sx={{ width: '250px', backgroundColor: 'white' }} // White background for the input
-                                />
-                                <Button
-                                    variant="contained"
-                                    color="primary"
-                                    onClick={handleEdit}
-                                    sx={{ color: "white", width: "150px" }}
-                                >
-                                    SAVE
-                                </Button>
-                            </Box>
+
+                            <TextField
+                                variant="outlined"
+                                placeholder="Category Name"
+                                value={editName}
+                                size='small'
+                                onChange={(e) => setEditName(e.target.value)}
+                                sx={{ width: '250px', backgroundColor: 'white' }} // White background for the input
+                            />
+                            <Button
+                                variant="contained"
+                                color="primary"
+                                onClick={handleEdit}
+                                sx={{ color: "white", width: "150px" }}
+                            >
+                                SAVE
+                            </Button>
+                        </Box>
                     </Box>
                 </>
             )}

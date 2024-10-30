@@ -201,5 +201,34 @@ namespace NASSTBACKEND.Controllers
                     .ToActionResult();
             }
         }
+        [Authorize]
+        [HttpGet("GetAllUsers")]
+        public async Task<IActionResult> GetAllUsers()
+        {
+            var loggedInUser = await userManager.GetUserAsync(User);
+            try
+            {
+                var result = await accountService.GetAllUsers();
+                return result.ToActionResult();
+            }
+            catch (Exception ex)
+            {
+                await context.Logs.AddAsync(new Log
+                {
+                    CreatedById = loggedInUser.Id,
+                    CreatedAt = DateTime.UtcNow,
+                    Message = ex.Message,
+                    StackTrace = ex.StackTrace,
+                    Source = ex.Source,
+                    Path = RequestInfoFetching.Path(Request),
+                    Protocol = RequestInfoFetching.Protocol(Request),
+                    Method = RequestInfoFetching.Method(Request),
+                });
+                await context.SaveChangesAsync();
+                return Result.BadRequest<User>()
+                    .With(Error.BadRequest("An error occurred, please reach out to the system administrator.", path: RequestInfoFetching.Path(Request), time: DateTime.UtcNow))
+                    .ToActionResult();
+            }
+        }
     }
 }
