@@ -14,6 +14,7 @@ namespace NASSTBACKEND.Data.Entities
         public string? TeamAdminId { get; set; }
         public DateTime RegistrationTime { get; set; }
         public DateTime ReplacementTime { get; set; }
+        public string? LogoUrl { get; set; }
 
     }
 

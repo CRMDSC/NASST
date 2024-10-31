@@ -152,3 +152,4 @@ C:\dev\NASST\NASST\NASSTBACKEND\bin\Debug\net8.0\IdentityServer4.Storage.dll
 C:\dev\NASST\NASST\NASSTBACKEND\bin\Debug\net8.0\Microsoft.AspNetCore.Authentication.OpenIdConnect.dll
 C:\dev\NASST\NASST\NASSTBACKEND\bin\Debug\net8.0\Newtonsoft.Json.dll
 c:\dev\NASST\NASST\NASSTBACKEND\bin\Debug\net8.0\Microsoft.AspNetCore.Authentication.JwtBearer.dll
+c:\dev\NASST\NASST\NASSTBACKEND\bin\Debug\net8.0\NASSTBACKEND.staticwebassets.runtime.json

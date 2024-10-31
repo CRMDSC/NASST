@@ -17,6 +17,8 @@ namespace NASSTBACKEND.Data.ViewModels
         [DataMember] public List<SportPlayersCategory>? SportPlayersCategories { get; set; }
         [DataMember] public List<SportAdditionalInfo>? SportAdditionalInfo { get; set; }
         [DataMember] public List<SportDocumentType>? SportDocumentType { get; set; }
+        [DataMember] public string? LogoUrl { get; set; }
+        [DataMember]public string? Logo{ get; set; }
 
     }
 }

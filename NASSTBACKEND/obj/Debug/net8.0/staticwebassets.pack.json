@@ -1,0 +1,65 @@
+{
+  "Files": [
+    {
+      "Id": "c:\\dev\\NASST\\NASST\\NASSTBACKEND\\wwwroot\\images\\logos\\16e5b336-83a0-4f00-8eca-aeeb39ce7535_basketball.jpg",
+      "PackagePath": "staticwebassets\\images\\logos\\16e5b336-83a0-4f00-8eca-aeeb39ce7535_basketball.jpg"
+    },
+    {
+      "Id": "c:\\dev\\NASST\\NASST\\NASSTBACKEND\\wwwroot\\images\\logos\\1b69d012-69d1-4edf-894e-3f9c1af27dd0_basketball.jpg",
+      "PackagePath": "staticwebassets\\images\\logos\\1b69d012-69d1-4edf-894e-3f9c1af27dd0_basketball.jpg"
+    },
+    {
+      "Id": "c:\\dev\\NASST\\NASST\\NASSTBACKEND\\wwwroot\\images\\logos\\1b9dd616-6ef3-49fd-b99e-8749a5507dc5_basketball.jpg",
+      "PackagePath": "staticwebassets\\images\\logos\\1b9dd616-6ef3-49fd-b99e-8749a5507dc5_basketball.jpg"
+    },
+    {
+      "Id": "c:\\dev\\NASST\\NASST\\NASSTBACKEND\\wwwroot\\images\\logos\\1db7db87-6e15-4b96-800d-a17d8b66e9d0_baseball.jpg",
+      "PackagePath": "staticwebassets\\images\\logos\\1db7db87-6e15-4b96-800d-a17d8b66e9d0_baseball.jpg"
+    },
+    {
+      "Id": "c:\\dev\\NASST\\NASST\\NASSTBACKEND\\wwwroot\\images\\logos\\318e89d0-5ec8-488e-a1bf-3c5b771ed521_basketball.jpg",
+      "PackagePath": "staticwebassets\\images\\logos\\318e89d0-5ec8-488e-a1bf-3c5b771ed521_basketball.jpg"
+    },
+    {
+      "Id": "c:\\dev\\NASST\\NASST\\NASSTBACKEND\\wwwroot\\images\\logos\\3c22211e-2017-492c-a47f-f4289cbbf45d_basketball.jpg",
+      "PackagePath": "staticwebassets\\images\\logos\\3c22211e-2017-492c-a47f-f4289cbbf45d_basketball.jpg"
+    },
+    {
+      "Id": "c:\\dev\\NASST\\NASST\\NASSTBACKEND\\wwwroot\\images\\logos\\49a6c220-d0b8-475c-950f-da58c8dbcb5f_basketball.jpg",
+      "PackagePath": "staticwebassets\\images\\logos\\49a6c220-d0b8-475c-950f-da58c8dbcb5f_basketball.jpg"
+    },
+    {
+      "Id": "c:\\dev\\NASST\\NASST\\NASSTBACKEND\\wwwroot\\images\\logos\\5750312e-9e75-4922-85d3-983f8e13c6f2_basketball.jpg",
+      "PackagePath": "staticwebassets\\images\\logos\\5750312e-9e75-4922-85d3-983f8e13c6f2_basketball.jpg"
+    },
+    {
+      "Id": "c:\\dev\\NASST\\NASST\\NASSTBACKEND\\wwwroot\\images\\logos\\7c234dc8-7a35-448a-a195-08e51ef81672_Football.jpg",
+      "PackagePath": "staticwebassets\\images\\logos\\7c234dc8-7a35-448a-a195-08e51ef81672_Football.jpg"
+    },
+    {
+      "Id": "c:\\dev\\NASST\\NASST\\NASSTBACKEND\\wwwroot\\images\\logos\\d7ea197d-50e9-4101-9a29-567c9652baef_Badminton.jpg",
+      "PackagePath": "staticwebassets\\images\\logos\\d7ea197d-50e9-4101-9a29-567c9652baef_Badminton.jpg"
+    },
+    {
+      "Id": "c:\\dev\\NASST\\NASST\\NASSTBACKEND\\wwwroot\\images\\logos\\e2ab5d81-8486-4cea-bee6-b8e394ae49ff_basketball.jpg",
+      "PackagePath": "staticwebassets\\images\\logos\\e2ab5d81-8486-4cea-bee6-b8e394ae49ff_basketball.jpg"
+    },
+    {
+      "Id": "obj\\Debug\\net8.0\\staticwebassets\\msbuild.NASSTBACKEND.Microsoft.AspNetCore.StaticWebAssets.props",
+      "PackagePath": "build\\Microsoft.AspNetCore.StaticWebAssets.props"
+    },
+    {
+      "Id": "obj\\Debug\\net8.0\\staticwebassets\\msbuild.build.NASSTBACKEND.props",
+      "PackagePath": "build\\NASSTBACKEND.props"
+    },
+    {
+      "Id": "obj\\Debug\\net8.0\\staticwebassets\\msbuild.buildMultiTargeting.NASSTBACKEND.props",
+      "PackagePath": "buildMultiTargeting\\NASSTBACKEND.props"
+    },
+    {
+      "Id": "obj\\Debug\\net8.0\\staticwebassets\\msbuild.buildTransitive.NASSTBACKEND.props",
+      "PackagePath": "buildTransitive\\NASSTBACKEND.props"
+    }
+  ],
+  "ElementsToRemove": []
+}

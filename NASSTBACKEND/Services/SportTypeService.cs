@@ -48,6 +48,16 @@ namespace NASSTBACKEND.Services.General
                     return Result.BadRequest<bool>().With(Error.InvalidParameter("Sport type title cannot be empty."));
                 }
                 var TeamAdmin = await context.Users.Where(u => u.Id == input.TeamAdminId).FirstOrDefaultAsync();
+                string? logoUrl = null;
+                if (input.Logo != null)
+                {
+                    var filePath = Path.Combine("wwwroot/images/logos", $"{Guid.NewGuid()}_{input.Logo.FileName}");
+                    using (var stream = new FileStream(filePath, FileMode.Create))
+                    {
+                        await input.Logo.CopyToAsync(stream);
+                    }
+                    logoUrl = $"/images/logos/{Path.GetFileName(filePath)}";
+                }
                 var sportType = new SportType
                 {
                     Name = input.Name,
@@ -55,7 +65,10 @@ namespace NASSTBACKEND.Services.General
                     CreatedBy = user,
                     CreatedById = user.Id,
                     TeamAdmin = TeamAdmin,
-                    TeamAdminId = input.TeamAdminId
+                    TeamAdminId = input.TeamAdminId,
+                    LogoUrl = logoUrl,
+                    RegistrationTime = input.RegistrationTime,
+                    ReplacementTime = input.ReplacementTime
                 };
                 await context.SportTypes.AddAsync(sportType);
 
@@ -168,6 +181,25 @@ namespace NASSTBACKEND.Services.General
                 {
                     return Result.BadRequest<bool>().With(Error.InvalidParameter("Sport type not found."));
                 }
+                string? logoUrl = sportType.LogoUrl;
+                if (input.Logo != null)
+                {
+                    var filePath = Path.Combine("wwwroot/images/logos", $"{Guid.NewGuid()}_{input.Logo.FileName}");
+                    using (var stream = new FileStream(filePath, FileMode.Create))
+                    {
+                        await input.Logo.CopyToAsync(stream);
+                    }
+                    logoUrl = $"/images/logos/{Path.GetFileName(filePath)}";
+                    if(sportType.LogoUrl != null)
+                    {
+                        string logoPathToDelete = Path.Combine("wwwroot", sportType.LogoUrl.TrimStart('/').Replace('/', '\\'));
+
+                        if (System.IO.File.Exists(logoPathToDelete))
+                        {
+                            System.IO.File.Delete(logoPathToDelete);
+                        }
+                    }
+                }
 
 #pragma warning disable CS8601 // Possible null reference assignment.
                 sportType.Name = input.Name;
@@ -177,6 +209,7 @@ namespace NASSTBACKEND.Services.General
                 sportType.TeamAdminId = input.TeamAdminId;
                 sportType.RegistrationTime = input.RegistrationTime;
                 sportType.ReplacementTime = input.ReplacementTime;
+                sportType.LogoUrl = logoUrl;
 
                 if (input.SportAdditionalInfo != null)
                 {
@@ -276,7 +309,8 @@ namespace NASSTBACKEND.Services.General
                 {
                     Id = s.Id,
                     Name = s.Name,
-                    TeamsCount = s.MaxTeams
+                    TeamsCount = s.MaxTeams,
+                    LogoUrl = s.LogoUrl
                 };
                 sportsTypeView.Add(newView);
             }
@@ -292,6 +326,21 @@ namespace NASSTBACKEND.Services.General
                 var playersInformation = await context.SportAdditionalInformation.Where(s => s.SportTypeId == sportType.Id).Include(s => s.AdditionalInformation).ToListAsync();
                 var playersDocs = await context.SportDocumentTypes.Where(s => s.SportTypeId == sportType.Id).Include(s => s.DocumentType).ToListAsync();
 
+                string logoFilePath = null;
+                string logoBase64 = null;
+
+                if (sportType.LogoUrl != null)
+                {
+                    logoFilePath = Path.Combine("", "wwwroot" + sportType.LogoUrl);
+
+                    if (System.IO.File.Exists(logoFilePath))
+                    {
+                        byte[] fileBytes = await System.IO.File.ReadAllBytesAsync(logoFilePath);
+                        logoBase64 = Convert.ToBase64String(fileBytes);
+                    }
+
+                }
+
                 var sportTypeView = new SportTypeView
                 {
                     Id = sportType.Id,
@@ -303,7 +352,9 @@ namespace NASSTBACKEND.Services.General
                     SportAdditionalInfo = playersInformation,
                     SportDocumentType = playersDocs,
                     SportPlayersCategories = playersCategories,
-                    TeamAdminId = sportType.TeamAdminId
+                    TeamAdminId = sportType.TeamAdminId,
+                    LogoUrl = sportType.LogoUrl,
+                    Logo = logoBase64
                 };
                 return sportTypeView;
 

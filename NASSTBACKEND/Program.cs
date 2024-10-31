@@ -174,7 +174,7 @@ app.UseSwagger(options => options.RouteTemplate = swaggerOptions.RouteTemplate);
 app.UseSwaggerUI(c => c.SwaggerEndpoint(swaggerOptions.UiEndpoint,"NASST"));
 #pragma warning restore CS8602 // Dereference of a possibly null reference.
 
-app.UseStaticFiles("/storage");
+app.UseStaticFiles("/wwwroot");
 app.UseRouting();
 
 app.UseIdentityServer();

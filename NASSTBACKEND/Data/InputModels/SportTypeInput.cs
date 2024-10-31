@@ -15,5 +15,6 @@ namespace NASSTBACKEND.Data.InputModels
     [DataMember] public List<SportPlayersCategory>? SportPlayersCategories { get; set; }
     [DataMember] public List<AdditionalInformation>? SportAdditionalInfo { get; set; }
     [DataMember] public List<DocumentType>? SportDocumentType { get; set; }
+    [DataMember] public IFormFile? Logo { get; set; }
   }
 }

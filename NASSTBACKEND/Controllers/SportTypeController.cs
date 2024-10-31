@@ -34,7 +34,7 @@ namespace NASSTBACKEND.Controllers
         [Authorize("Admin")]
         [HttpPost("AddSportType")]
         [Produces(typeof(Result<bool>))]
-        public async Task<IActionResult> AddSportType([FromBody] SportTypeInput input)
+        public async Task<IActionResult> AddSportType([FromForm] SportTypeInput input)
         {
             var loggedInUser = await userManager.GetUserAsync(User);
             try
@@ -74,7 +74,7 @@ namespace NASSTBACKEND.Controllers
         [Authorize("Admin")]
         [HttpPost("UpdateSportType")]
         [Produces(typeof(Result<bool>))]
-        public async Task<IActionResult> UpdateSportType([FromBody] UpdateSportTypeInput input)
+        public async Task<IActionResult> UpdateSportType([FromForm] UpdateSportTypeInput input)
         {
             var loggedInUser = await userManager.GetUserAsync(User);
             try
