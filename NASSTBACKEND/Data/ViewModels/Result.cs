@@ -7,7 +7,7 @@ namespace NASSTBACKEND.Data.ViewModels
     [DataContract]
     public class Result<TPayload>
     {
-        [DataMember] public TPayload Payload { get; set; }
+        [DataMember] public required TPayload Payload { get; set; }
         [DataMember] public int Status { get; set; } = 200;
         [DataMember] public List<Error> Errors { get; set; } = new List<Error>();
 

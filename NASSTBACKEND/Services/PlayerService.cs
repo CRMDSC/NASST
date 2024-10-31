@@ -1,7 +1,4 @@
 using Microsoft.AspNetCore.Identity;
-using Microsoft.Extensions.Options;
-using Microsoft.IdentityModel.Tokens;
-using System.IdentityModel.Tokens.Jwt;
 using Microsoft.EntityFrameworkCore;
 using NASSTBACKEND.Services.Interfaces;
 using NASSTBACKEND.Data.ViewModels;
@@ -30,8 +27,12 @@ namespace NASSTBACKEND.Services.General
 
         public async Task<Result<Player>> CreatePlayer(PlayerInput input, User user)
         {
-            var Category = await context.Category.Where(c => c.Id == input.CategoryId).FirstOrDefaultAsync();
             if (input.FirstName == "" || input.LastName == "" || input.Email == "" || input.PhoneNumber == "" || input.CategoryId == 0)
+            {
+                return Result.BadRequest<Player>().With(Error.InvalidParameter("Please fill all required fields"));
+            }
+            var Category = await context.Category.Where(c => c.Id == input.CategoryId).FirstOrDefaultAsync();
+            if (Category == null)
             {
                 return Result.BadRequest<Player>().With(Error.InvalidParameter("Please fill all required fields"));
             }
@@ -55,9 +56,16 @@ namespace NASSTBACKEND.Services.General
         public async Task<Result<bool>> DeletePlayer(int id)
         {
             var player = await context.Players.Where(p => p.Id == id).FirstOrDefaultAsync();
-            player.IsArchived = true;
-            await context.SaveChangesAsync();
-            return true;
+            if (player != null)
+            {
+                player.IsArchived = true;
+                await context.SaveChangesAsync();
+                return Result.Ok<bool>();
+            }
+            else
+            {
+                return Result.BadRequest<bool>().With(Error.InvalidParameter("Something went wrong, please contact the administrator."));
+            }
         }
 
         public async Task<Result<Player>> GetPlayerById(int id)

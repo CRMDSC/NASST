@@ -14,13 +14,19 @@ using Microsoft.AspNetCore.Authentication.JwtBearer;
 var builder = WebApplication.CreateBuilder(args);
 
 IConfigurationSection appConfigSection = builder.Configuration.GetSection(nameof(AppConfiguration));
+#pragma warning disable CS8600 // Converting null literal or possible null value to non-nullable type.
 AppConfiguration appConfig = appConfigSection.Get<AppConfiguration>();
+#pragma warning restore CS8600 // Converting null literal or possible null value to non-nullable type.
 
 IConfigurationSection securitySection = builder.Configuration.GetSection(nameof(Security));
+#pragma warning disable CS8600 // Converting null literal or possible null value to non-nullable type.
 Security securityOptions = securitySection.Get<Security>();
+#pragma warning restore CS8600 // Converting null literal or possible null value to non-nullable type.
 
 var swaggerSection = builder.Configuration.GetSection(nameof(Swagger));
+#pragma warning disable CS8600 // Converting null literal or possible null value to non-nullable type.
 Swagger swaggerOptions = swaggerSection.Get<Swagger>();
+#pragma warning restore CS8600 // Converting null literal or possible null value to non-nullable type.
 
 ServicePointManager.ServerCertificateValidationCallback +=
            (sender, certificate, chain, sslPolicyErrors) => true;
@@ -38,6 +44,7 @@ builder.Services.AddIdentity<User, Role>()
     .AddEntityFrameworkStores<NASSTContext>()
     .AddDefaultTokenProviders();
 builder.Services.AddControllers();
+#pragma warning disable CS8602 // Dereference of a possibly null reference.
 builder.Services.AddIdentityServer()
     .AddInMemoryClients(new List<Client>
     {
@@ -54,6 +61,7 @@ builder.Services.AddIdentityServer()
         new ApiScope(securityOptions.AllowedScopes, securityOptions.ApiScopeDisplayName)
     })
     .AddDeveloperSigningCredential();
+#pragma warning restore CS8602 // Dereference of a possibly null reference.
 
 builder.Services.AddAuthentication(
                 options =>
@@ -90,11 +98,13 @@ builder.Services.AddAuthorization(options =>
 
 builder.Services.AddSwaggerGen(options =>
 {
+#pragma warning disable CS8602 // Dereference of a possibly null reference.
     options.SwaggerDoc(swaggerOptions.Version, new OpenApiInfo
     {
         Title = swaggerOptions.Description,
         Version = swaggerOptions.Version
     });
+#pragma warning restore CS8602 // Dereference of a possibly null reference.
 
     var securityScheme = new OpenApiSecurityScheme
     {
@@ -157,10 +167,14 @@ if (app.Environment.IsDevelopment())
     app.UseDeveloperExceptionPage();
 }
 app.UseCors(x => x.AllowAnyOrigin().AllowAnyMethod().AllowAnyHeader());
+#pragma warning disable CS8602 // Dereference of a possibly null reference.
 app.UseSwagger(options => options.RouteTemplate = swaggerOptions.RouteTemplate);
+#pragma warning restore CS8602 // Dereference of a possibly null reference.
+#pragma warning disable CS8602 // Dereference of a possibly null reference.
 app.UseSwaggerUI(c => c.SwaggerEndpoint(swaggerOptions.UiEndpoint,"NASST"));
+#pragma warning restore CS8602 // Dereference of a possibly null reference.
 
-app.UseStaticFiles("/storage");
+app.UseStaticFiles("/wwwroot");
 app.UseRouting();
 
 app.UseIdentityServer();
@@ -169,7 +183,7 @@ app.UseAuthorization();
 
 app.UseEndpoints(endpoints =>
     {
-        endpoints.MapControllerRoute("api", "api/{controller}/{action}/{id?}/{type?}");
+        _ = endpoints.MapControllerRoute("api", "api/{controller}/{action}/{id?}/{type?}");
     });
 
 

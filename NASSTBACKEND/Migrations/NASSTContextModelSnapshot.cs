@@ -423,6 +423,9 @@ namespace NASSTBACKEND.Migrations
                     b.Property<bool>("IsArchived")
                         .HasColumnType("bit");
 
+                    b.Property<string>("LogoUrl")
+                        .HasColumnType("nvarchar(max)");
+
                     b.Property<int>("MaxTeams")
                         .HasColumnType("int");
 
@@ -579,12 +582,10 @@ namespace NASSTBACKEND.Migrations
                         .HasColumnType("nvarchar(30)");
 
                     b.Property<string>("Token")
-                        .IsRequired()
                         .HasMaxLength(70)
                         .HasColumnType("nvarchar(70)");
 
                     b.Property<string>("UserId")
-                        .IsRequired()
                         .HasColumnType("nvarchar(450)");
 
                     b.HasKey("Id");
@@ -791,9 +792,7 @@ namespace NASSTBACKEND.Migrations
                 {
                     b.HasOne("NASSTBACKEND.Data.Entities.User", "User")
                         .WithMany()
-                        .HasForeignKey("UserId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
+                        .HasForeignKey("UserId");
 
                     b.Navigation("User");
                 });

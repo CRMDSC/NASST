@@ -34,20 +34,28 @@ namespace NASSTBACKEND.Controllers
         [Authorize("Admin")]
         [HttpPost("AddSportType")]
         [Produces(typeof(Result<bool>))]
-        public async Task<IActionResult> AddSportType([FromBody] SportTypeInput input)
+        public async Task<IActionResult> AddSportType([FromForm] SportTypeInput input)
         {
             var loggedInUser = await userManager.GetUserAsync(User);
             try
             {
-                var result = await sportTypeService.AddSportType(input, loggedInUser);
-
-                return result.ToActionResult();
+                if (loggedInUser != null)
+                {
+                    var result = await sportTypeService.AddSportType(input, loggedInUser);
+                    return result.ToActionResult();
+                }
+                else
+                {
+                    return Result.BadRequest<LoginView>()
+                    .With(Error.BadRequest("An error occurred, please reach out to the system administrator.", path: RequestInfoFetching.Path(Request), time: DateTime.UtcNow))
+                    .ToActionResult();
+                }
             }
             catch (Exception ex)
             {
                 await context.Logs.AddAsync(new Log
                 {
-                    CreatedById = loggedInUser.Id,
+                    CreatedById = loggedInUser == null ? "" : loggedInUser.Id,
                     CreatedAt = DateTime.UtcNow,
                     Message = "Faild to add sport type",
                     StackTrace = ex.StackTrace,
@@ -66,20 +74,28 @@ namespace NASSTBACKEND.Controllers
         [Authorize("Admin")]
         [HttpPost("UpdateSportType")]
         [Produces(typeof(Result<bool>))]
-        public async Task<IActionResult> UpdateSportType([FromBody] UpdateSportTypeInput input)
+        public async Task<IActionResult> UpdateSportType([FromForm] UpdateSportTypeInput input)
         {
             var loggedInUser = await userManager.GetUserAsync(User);
             try
             {
-                var result = await sportTypeService.EditSportType(input);
-
-                return result.ToActionResult();
+                if (loggedInUser != null)
+                {
+                    var result = await sportTypeService.EditSportType(input);
+                    return result.ToActionResult();
+                }
+                else
+                {
+                    return Result.BadRequest<LoginView>()
+                    .With(Error.BadRequest("An error occurred, please reach out to the system administrator.", path: RequestInfoFetching.Path(Request), time: DateTime.UtcNow))
+                    .ToActionResult();
+                }
             }
             catch (Exception ex)
             {
                 await context.Logs.AddAsync(new Log
                 {
-                    CreatedById = loggedInUser.Id,
+                    CreatedById = loggedInUser == null ? "" : loggedInUser.Id,
                     CreatedAt = DateTime.UtcNow,
                     Message = "Faild to update sport type",
                     StackTrace = ex.StackTrace,
@@ -104,14 +120,13 @@ namespace NASSTBACKEND.Controllers
             try
             {
                 var result = await sportTypeService.GetSportsTypes();
-
                 return result.ToActionResult();
             }
             catch (Exception ex)
             {
                 await context.Logs.AddAsync(new Log
                 {
-                    CreatedById = loggedInUser.Id,
+                    CreatedById = loggedInUser == null ? "" : loggedInUser.Id,
                     CreatedAt = DateTime.UtcNow,
                     Message = "Faild to get all sports types",
                     StackTrace = ex.StackTrace,
@@ -143,7 +158,7 @@ namespace NASSTBACKEND.Controllers
             {
                 await context.Logs.AddAsync(new Log
                 {
-                    CreatedById = loggedInUser.Id,
+                    CreatedById = loggedInUser == null ? "" : loggedInUser.Id,
                     CreatedAt = DateTime.UtcNow,
                     Message = "Failed to get sport type",
                     StackTrace = ex.StackTrace,
@@ -162,7 +177,7 @@ namespace NASSTBACKEND.Controllers
         [Authorize("Admin")]
         [HttpPost("DeleteSportType/{id}")]
         [Produces(typeof(Result<bool>))]
-        public async Task<IActionResult> DeleteSportType([FromRoute] int id )
+        public async Task<IActionResult> DeleteSportType([FromRoute] int id)
         {
             var loggedInUser = await userManager.GetUserAsync(User);
             try
@@ -175,7 +190,7 @@ namespace NASSTBACKEND.Controllers
             {
                 await context.Logs.AddAsync(new Log
                 {
-                    CreatedById = loggedInUser.Id,
+                   CreatedById = loggedInUser == null ? "" : loggedInUser.Id,
                     CreatedAt = DateTime.UtcNow,
                     Message = "Failed to delete sport type",
                     StackTrace = ex.StackTrace,

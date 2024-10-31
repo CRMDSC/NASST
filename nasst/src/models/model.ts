@@ -91,10 +91,10 @@ export interface SportDocumentType {
 // ..\NASSTBACKEND\Data\Entities\SportPlayersCategory.cs
 export interface SportPlayersCategory {
     id: number;
-    category: Category;
+    category?: Category;
     categoryId: number;
     sportType?: SportType;
-    sportTypeId?: number;
+    sportTypeId: number;
     playersCount: number;
     isArchived: boolean;
 }
@@ -113,6 +113,7 @@ export interface SportType {
     teamAdminId?: string;
     registrationTime: Date;
     replacementTime: Date;
+    logoUrl?: string;
 }
 
 // ..\NASSTBACKEND\Data\Entities\User.cs
@@ -133,7 +134,7 @@ export interface User {
 // ..\NASSTBACKEND\Data\Entities\UserRefreshToken.cs
 export interface UserRefreshToken {
     id: number;
-    token: string;
+    token?: string;
     expires?: Date;
     isExpired: boolean;
     created: Date;
@@ -142,83 +143,86 @@ export interface UserRefreshToken {
     revokedByIp?: string;
     replacedByToken?: string;
     isActive: boolean;
-    userId: string;
-    user: User;
+    userId?: string;
+    user?: User;
 }
 
 // ..\NASSTBACKEND\Data\InputModels\EditPlayerInput.cs
 export interface EditPlayerInput {
     id: number;
-    firstName: string;
-    lastName: string;
-    email: string;
-    phoneNumber: string;
+    firstName?: string;
+    lastName?: string;
+    email?: string;
+    phoneNumber?: string;
     categoryId: number;
-    category: Category;
+    category?: Category;
 }
 
 // ..\NASSTBACKEND\Data\InputModels\LoginInput.cs
 export interface LoginInput {
-    email: string;
-    password: string;
-    fcmToken: string;
+    email?: string;
+    password?: string;
+    fcmToken?: string;
 }
 
 // ..\NASSTBACKEND\Data\InputModels\PlayerInput.cs
 export interface PlayerInput {
-    firstName: string;
-    lastName: string;
-    email: string;
-    phoneNumber: string;
+    firstName?: string;
+    lastName?: string;
+    email?: string;
+    phoneNumber?: string;
     categoryId: number;
 }
 
 // ..\NASSTBACKEND\Data\InputModels\RegisterInput.cs
 export interface RegisterInput {
-    firstName: string;
-    lastName: string;
-    email: string;
-    password: string;
-    role: string;
+    firstName?: string;
+    lastName?: string;
+    email?: string;
+    password?: string;
+    role?: string;
 }
 
 // ..\NASSTBACKEND\Data\InputModels\SportTypeInput.cs
 export interface SportTypeInput {
-    name: string;
+    name?: string;
     teamsCount: number;
     teamAdminId?: string;
     registrationTime: Date;
     replacementTime: Date;
-    sportPlayersCategories: SportPlayersCategory[];
-    sportAdditionalInfo: AdditionalInformation[];
-    sportDocumentType: DocumentType[];
+    sportPlayersCategories?: SportPlayersCategory[];
+    sportAdditionalInfo?: AdditionalInformation[];
+    sportDocumentType?: DocumentType[];
+    logo?: File | null;
 }
 
 // ..\NASSTBACKEND\Data\InputModels\UpdateSportTypeInput.cs
 export interface UpdateSportTypeInput {
     id: number;
-    name: string;
+    name?: string;
     teamsCount: number;
     teamAdminId?: string;
     teamAdmin?: User;
     registrationTime: Date;
     replacementTime: Date;
-    sportPlayersCategories: SportPlayersCategory[];
-    sportAdditionalInfo: AdditionalInformation[];
-    sportDocumentType: DocumentType[];
+    sportPlayersCategories?: SportPlayersCategory[];
+    sportAdditionalInfo?: AdditionalInformation[];
+    sportDocumentType?: DocumentType[];
+    logo?: File | null;
+    logoUrl?: string;
 }
 
 // ..\NASSTBACKEND\Data\ViewModels\ErrorView.cs
 export interface Error {
-    code: string;
-    description: string;
-    path: string;
+    code?: string;
+    description?: string;
+    path?: string;
     time?: Date;
 }
 
 // ..\NASSTBACKEND\Data\ViewModels\LoginView.cs
 export interface LoginView {
-    accessToken: string;
+    accessToken?: string;
     accessTokenExpiresIn: number;
     refreshTokenExpiresIn: number;
 }
@@ -233,23 +237,25 @@ export interface Result<TPayload> {
 // ..\NASSTBACKEND\Data\ViewModels\SportTypeView.cs
 export interface SportTypeView {
     id: number;
-    name: string;
+    name?: string;
     teamsCount: number;
     teamAdminId?: string;
     teamAdmin?: User;
     registrationTime: Date;
     replacementTime: Date;
-    sportPlayersCategories: SportPlayersCategory[];
-    sportAdditionalInfo: SportAdditionalInfo[];
-    sportDocumentType: SportDocumentType[];
+    sportPlayersCategories?: SportPlayersCategory[];
+    sportAdditionalInfo?: SportAdditionalInfo[];
+    sportDocumentType?: SportDocumentType[];
+    logoUrl?: string;
+    logo?: string;
 }
 
 // ..\NASSTBACKEND\Data\ViewModels\UserView.cs
 export interface UserView {
-    userId: string;
-    fullName: string;
-    firstName: string;
-    lastName: string;
-    email: string;
-    role: string;
+    userId?: string;
+    fullName?: string;
+    firstName?: string;
+    lastName?: string;
+    email?: string;
+    role?: string;
 }

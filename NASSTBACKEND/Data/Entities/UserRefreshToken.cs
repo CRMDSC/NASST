@@ -10,7 +10,7 @@ namespace NASSTBACKEND.Data.Entities
     {
         public int Id { get; set; }
         [StringLength(70)]
-        public string Token { get; set; }
+        public string? Token { get; set; }
         public DateTime? Expires { get; set; }
         public bool IsExpired => Expires != null ? DateTime.UtcNow >= Expires : false;
         public DateTime Created { get; set; }
@@ -22,7 +22,7 @@ namespace NASSTBACKEND.Data.Entities
         [StringLength(70)]
         public string? ReplacedByToken { get; set; }
         public bool IsActive => Revoked == null && !IsExpired;
-        public string UserId { get; set; }
-        public virtual User User { get; set; }
+        public string? UserId { get; set; }
+        public virtual User? User { get; set; }
     }
 }

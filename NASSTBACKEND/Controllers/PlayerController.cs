@@ -39,14 +39,23 @@ namespace NASSTBACKEND.Controllers
             var loggedInUser = await userManager.GetUserAsync(User);
             try
             {
-                var result = await playerService.CreatePlayer(input, loggedInUser);
-                return result.ToActionResult();
+                if (loggedInUser != null)
+                {
+                    var result = await playerService.CreatePlayer(input, loggedInUser);
+                    return result.ToActionResult();
+                }
+                else
+                {
+                    return Result.BadRequest<LoginView>()
+                   .With(Error.BadRequest("An error occurred, please reach out to the system administrator.", path: RequestInfoFetching.Path(Request), time: DateTime.UtcNow))
+                   .ToActionResult();
+                }
             }
             catch (Exception ex)
             {
                 await context.Logs.AddAsync(new Log
                 {
-                    CreatedById = loggedInUser.Id,
+                    CreatedById = loggedInUser == null ? "" : loggedInUser.Id,
                     CreatedAt = DateTime.UtcNow,
                     Message = "Faild to add category",
                     StackTrace = ex.StackTrace,
@@ -77,7 +86,7 @@ namespace NASSTBACKEND.Controllers
             {
                 await context.Logs.AddAsync(new Log
                 {
-                    CreatedById = loggedInUser.Id,
+                    CreatedById = loggedInUser == null ? "" : loggedInUser.Id,
                     CreatedAt = DateTime.UtcNow,
                     Message = "Faild to get categories",
                     StackTrace = ex.StackTrace,
@@ -108,7 +117,7 @@ namespace NASSTBACKEND.Controllers
             {
                 await context.Logs.AddAsync(new Log
                 {
-                    CreatedById = loggedInUser.Id,
+                    CreatedById = loggedInUser == null ? "" : loggedInUser.Id,
                     CreatedAt = DateTime.UtcNow,
                     Message = "Faild to get categories",
                     StackTrace = ex.StackTrace,
@@ -139,7 +148,7 @@ namespace NASSTBACKEND.Controllers
             {
                 await context.Logs.AddAsync(new Log
                 {
-                    CreatedById = loggedInUser.Id,
+                    CreatedById = loggedInUser == null ? "" : loggedInUser.Id,
                     CreatedAt = DateTime.UtcNow,
                     Message = "Faild to get categories",
                     StackTrace = ex.StackTrace,
@@ -163,14 +172,23 @@ namespace NASSTBACKEND.Controllers
             var loggedInUser = await userManager.GetUserAsync(User);
             try
             {
-                var result = await playerService.UpdatePlayer(input, loggedInUser);
-                return result.ToActionResult();
+                if (loggedInUser != null)
+                {
+                    var result = await playerService.UpdatePlayer(input, loggedInUser);
+                    return result.ToActionResult();
+                }
+                else
+                {
+                    return Result.BadRequest<LoginView>()
+                    .With(Error.BadRequest("An error occurred, please reach out to the system administrator.", path: RequestInfoFetching.Path(Request), time: DateTime.UtcNow))
+                    .ToActionResult();
+                }
             }
             catch (Exception ex)
             {
                 await context.Logs.AddAsync(new Log
                 {
-                    CreatedById = loggedInUser.Id,
+                    CreatedById = loggedInUser == null ? "" : loggedInUser.Id,
                     CreatedAt = DateTime.UtcNow,
                     Message = "Faild to get categories",
                     StackTrace = ex.StackTrace,

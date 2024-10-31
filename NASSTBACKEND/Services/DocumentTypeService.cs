@@ -41,23 +41,44 @@ namespace NASSTBACKEND.Services.General
         public async Task<Result<bool>> DeleteDocumentType(int id)
         {
             var docType = await context.DocumentTypes.Where(i => i.Id == id).FirstOrDefaultAsync();
-            docType.IsArchived = true;
-            await context.SaveChangesAsync();
-            return true;
+            if (docType != null)
+            {
+                docType.IsArchived = true;
+                await context.SaveChangesAsync();
+                return Result.Ok<bool>();
+            }
+            else
+            {
+                return Result.BadRequest<bool>().With(Error.NotAcceptable("Something went wrong, please contact the administrator."));
+            }
         }
 
         public async Task<Result<bool>> EditDocumentType(DocumentType input)
         {
             var doc = await context.DocumentTypes.Where(c => c.Id == input.Id).FirstOrDefaultAsync();
-            doc.Type = input.Type;
-            await context.SaveChangesAsync();
-            return true;
+            if (doc != null)
+            {
+                doc.Type = input.Type;
+                await context.SaveChangesAsync();
+                return Result.Ok<bool>();
+            }
+            else
+            {
+                return Result.BadRequest<bool>().With(Error.NotAcceptable("Something went wrong, please contact the administrator."));
+            }
         }
 
         public async Task<Result<DocumentType>> GetDocumentTypeById(int id)
         {
             var info = await context.DocumentTypes.Where(c => c.Id == id).FirstOrDefaultAsync();
-            return info;
+            if (info != null)
+            {
+                return info;
+            }
+            else
+            {
+                return Result.BadRequest<DocumentType>().With(Error.NotAcceptable("Something went wrong, please contact the administrator."));
+            }
         }
 
         public async Task<Result<List<DocumentType>>> GetDocumentTypes()

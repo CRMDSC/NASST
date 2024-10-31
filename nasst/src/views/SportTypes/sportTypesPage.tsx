@@ -55,6 +55,7 @@ const SportsType = () => {
   const [errorAlert, setErrorAlert] = useState(false)
   const [successMessage, setSuccessMessage] = useState('');
   const [deleteId, setDeleteId] = useState(0)
+  const [imagePreview, setImagePreview] = useState<any>('');
   const [sportTypeInputEdit, setSportTypeInputEdit] = useState<UpdateSportTypeInput>({
     id: 0,
     name: "",
@@ -65,17 +66,20 @@ const SportsType = () => {
     sportPlayersCategories: [],
     teamsCount: 0,
     teamAdminId: "",
-    teamAdmin: undefined
+    teamAdmin: undefined,
+    logo: null,
+    logoUrl: ""
   })
   const [sportTypeInput, setSportTypeInput] = useState<SportTypeInput>({
     name: "",
-    registrationTime: new Date(),
-    replacementTime: new Date(),
+    registrationTime: dayjs(new Date()).format(('YYYY-MM-DD hh:mm:ss')) as unknown as Date,
+    replacementTime: dayjs(new Date()).format(('YYYY-MM-DD hh:mm:ss')) as unknown as Date,
     sportAdditionalInfo: [],
     sportDocumentType: [],
     sportPlayersCategories: [],
     teamsCount: 0,
     teamAdminId: "",
+    logo: null
   })
 
   const handleChangePage = (event: any, newPage: any) => {
@@ -88,7 +92,10 @@ const SportsType = () => {
   };
 
   const handleAddRowCategories = () => {
-    setRowsCategories([...rowsCategories, { id: 0, categoryId: 0, playersCount: 0, category: {} as Category, isArchived: false }]);
+    setRowsCategories([...rowsCategories, {
+      id: 0, categoryId: 0, playersCount: 0, category: {} as Category, isArchived: false,
+      sportTypeId: 0
+    }]);
   };
 
   const handleChangeCategories = (index: number, event: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) => {
@@ -128,6 +135,18 @@ const SportsType = () => {
 
       const documentType = (await getDocs()).payload
       setDocumentType(documentType)
+
+      setSportTypeInput({
+        name: "",
+        registrationTime: dayjs(new Date()).format(('YYYY-MM-DD hh:mm:ss')) as unknown as Date,
+        replacementTime: dayjs(new Date()).format(('YYYY-MM-DD hh:mm:ss')) as unknown as Date,
+        sportAdditionalInfo: [],
+        sportDocumentType: [],
+        sportPlayersCategories: [],
+        teamsCount: 0,
+        teamAdminId: "",
+        logo: null
+      })
       setLoader(false)
 
     } catch (ex: any) {
@@ -158,15 +177,17 @@ const SportsType = () => {
           name: sportType.name,
           registrationTime: sportType.registrationTime,
           replacementTime: sportType.replacementTime,
-          sportAdditionalInfo: sportType.sportAdditionalInfo.map((info) => info.additionalInformation),
-          sportDocumentType: sportType.sportDocumentType.map((doc) => doc.documentType),
+          sportAdditionalInfo: sportType.sportAdditionalInfo?.map((info) => info.additionalInformation),
+          sportDocumentType: sportType.sportDocumentType?.map((doc) => doc.documentType),
           sportPlayersCategories: sportType.sportPlayersCategories,
           teamsCount: sportType.teamsCount,
           teamAdminId: sportType.teamAdminId,
           teamAdmin: sportType.teamAdmin,
-          id: sportType.id
+          id: sportType.id,
+          logoUrl: sportType.logoUrl
         }
-        setRowsCategories(sportType.sportPlayersCategories)
+        setImagePreview("http://localhost:5028/wwwroot" + sportType.logoUrl)
+        setRowsCategories(sportType.sportPlayersCategories as unknown as SportPlayersCategory[])
         setSportTypeInputEdit(sportTypeInput)
         setEditFormExpanded(true)
         setLoader(false)
@@ -179,7 +200,7 @@ const SportsType = () => {
   }
 
   const filteredSportsData = sportsData.filter(sport =>
-    sport.name.toLowerCase().includes(filter.toLowerCase())
+    sport.name?.toLowerCase().includes(filter.toLowerCase())
   );
 
   const handleAddSportsType = async () => {
@@ -254,6 +275,17 @@ const SportsType = () => {
     fetchData();
   }, []);
 
+  const handleFileChange = (e: any) => {
+    const file = e.target.files?.[0];
+    if (file) {
+      setSportTypeInputEdit({ ...sportTypeInputEdit, logo: file });
+      const reader = new FileReader();
+      reader.onloadend = () => {
+        setImagePreview(reader.result);
+      };
+      reader.readAsDataURL(file); 
+    }
+  };
 
   const paginatedData = filteredSportsData.slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage);
   return (
@@ -293,6 +325,7 @@ const SportsType = () => {
                 <TableHead>
                   <TableRow>
                     <TableCell sx={{ backgroundColor: 'rgba(91, 139, 197)', color: 'white', fontSize: "17px" }}>ID</TableCell>
+                    <TableCell sx={{ backgroundColor: 'rgba(91, 139, 197)', color: 'white', fontSize: "17px" }}>IMAGE</TableCell>
                     <TableCell sx={{ backgroundColor: 'rgba(91, 139, 197)', color: 'white', fontSize: "17px" }}>NAME</TableCell>
                     <TableCell sx={{ backgroundColor: 'rgba(91, 139, 197)', color: 'white', fontSize: "17px" }}>TEAMS COUNT</TableCell>
                     <TableCell sx={{ backgroundColor: 'rgba(91, 139, 197)', color: 'white', fontSize: "17px" }}>ACTIONS</TableCell>
@@ -302,6 +335,7 @@ const SportsType = () => {
                   {paginatedData.map((sport) => (
                     <TableRow key={sport.id}>
                       <TableCell>{sport.id}</TableCell>
+                      <TableCell><img src={"http://localhost:5028/wwwroot" + sport.logoUrl} style={{ height: "60px" }} /></TableCell>
                       <TableCell>{sport.name}</TableCell>
                       <TableCell>{sport.teamsCount}</TableCell>
                       <TableCell>
@@ -351,7 +385,7 @@ const SportsType = () => {
             overflowY: 'auto',
             zIndex: 10,
           }}>
-          {loader ? <Box sx={{ display: 'flex', alignItems: 'center', justifyContent: 'center', height: '100vh' }}><CircularProgress /> </Box>  :
+          {loader ? <Box sx={{ display: 'flex', alignItems: 'center', justifyContent: 'center', height: '100vh' }}><CircularProgress /> </Box> :
             <><Box sx={{ display: 'flex', justifyContent: "flex-end" }}>
               <Button variant="outlined" color="primary" onClick={() => setViewFormExpanded(false)}>
                 Back
@@ -360,6 +394,21 @@ const SportsType = () => {
               <Typography sx={{ color: '#3b6fa0', fontSize: { xs: '18px', sm: '20px' }, fontWeight: '500', mb: 2 }}>
                 General Information
               </Typography>
+              <Box
+                sx={{
+                  display: 'flex',
+                  flexDirection: 'column',
+                  width: "100%",
+                  justifyContent: "center",
+                  alignItems: "center"
+                }}
+              >
+                <img
+                  src={`http://localhost:5028/wwwroot${sportType?.logoUrl}`}
+                  style={{ height: "180px", margin: "0 auto" }}
+                />
+              </Box>
+
 
               <Box sx={{ display: 'flex', flexDirection: 'row', flexWrap: 'wrap', gap: 2, mb: 3 }}>
                 <Box sx={{ display: 'flex', flexDirection: 'column', width: { xs: '100%', sm: '48%', md: '220px' } }}>
@@ -460,7 +509,7 @@ const SportsType = () => {
                   Sports Players Categories
                 </Typography>
               </Box>
-              {sportType?.sportPlayersCategories.map((row: any, index: any) => (
+              {sportType?.sportPlayersCategories?.map((row: any, index: any) => (
                 <Box key={index} display="flex" gap={2} mb={1}>
                   <Autocomplete
                     disabled
@@ -503,7 +552,7 @@ const SportsType = () => {
             overflowY: 'auto',
             zIndex: 10,
           }}>
-          {loader ?  <Box sx={{ display: 'flex', alignItems: 'center', justifyContent: 'center', height: '100vh' }}><CircularProgress /> </Box> :
+          {loader ? <Box sx={{ display: 'flex', alignItems: 'center', justifyContent: 'center', height: '100vh' }}><CircularProgress /> </Box> :
             <><Box sx={{ display: 'flex', justifyContent: "flex-end" }}>
               <Button variant="outlined" color="primary" onClick={() => setFormExpanded(false)}>
                 Back
@@ -544,7 +593,7 @@ const SportsType = () => {
                   <Autocomplete
                     disablePortal
                     options={users}
-                    getOptionLabel={(option) => option.fullName}
+                    getOptionLabel={(option) => option.fullName as string}
                     onChange={(e, props) => setSportTypeInput({ ...sportTypeInput, teamAdminId: props?.userId })}
                     renderInput={(params) => <TextField {...params} size="small" sx={{ width: '100%', backgroundColor: 'white' }} />}
                   />
@@ -556,7 +605,10 @@ const SportsType = () => {
                     <DateTimePicker
                       sx={{ width: '100%', backgroundColor: 'white' }}
                       value={sportTypeInput.registrationTime ? dayjs(sportTypeInput.registrationTime) : null}
-                      onChange={(newValue) => setSportTypeInput({ ...sportTypeInput, registrationTime: newValue?.toDate() || null as unknown as Date })}
+                      onChange={(newValue) =>
+                        setSportTypeInput({ ...sportTypeInput, registrationTime: (dayjs(newValue).format(('YYYY-MM-DD hh:mm:ss')) || null) as unknown as Date })
+                        //  console.log(dayjs(newValue).format(('YYYY-MM-DD hh:mm:ss')))
+                      }
                       slotProps={{ textField: { size: 'small' } }}
                     />
                   </LocalizationProvider>
@@ -567,10 +619,19 @@ const SportsType = () => {
                     <DateTimePicker
                       sx={{ width: '100%', backgroundColor: 'white' }}
                       value={sportTypeInput.registrationTime ? dayjs(sportTypeInput.registrationTime) : null}
-                      onChange={(newValue) => setSportTypeInput({ ...sportTypeInput, replacementTime: newValue?.toDate() || null as unknown as Date })}
+                      onChange={(newValue) => setSportTypeInput({ ...sportTypeInput, replacementTime: (dayjs(newValue).format(('YYYY-MM-DD hh:mm:ss')) || null) as unknown as Date })}
                       slotProps={{ textField: { size: 'small' } }}
                     />
                   </LocalizationProvider>
+                </Box>
+                <Box sx={{ display: 'flex', flexDirection: 'column', width: { xs: '100%', sm: '48%', md: '220px' } }}>
+                  <Typography sx={{ color: '#3b6fa0', fontSize: '15px', fontWeight: '500' }}>Logo</Typography>
+                  <input
+                    type="file"
+                    id="logo"
+                    onChange={(e) => setSportTypeInput({ ...sportTypeInput, logo: e.target.files?.[0] })}
+                    accept="image/*"
+                  />
                 </Box>
               </Box>
               <Divider sx={{ my: 3 }} />
@@ -668,7 +729,7 @@ const SportsType = () => {
             zIndex: 10,
           }}
         >
-          {loader ?  <Box sx={{ display: 'flex', alignItems: 'center', justifyContent: 'center', height: '100vh' }}><CircularProgress /> </Box> :
+          {loader ? <Box sx={{ display: 'flex', alignItems: 'center', justifyContent: 'center', height: '100vh' }}><CircularProgress /> </Box> :
 
             <><Box sx={{ display: 'flex', justifyContent: "flex-end" }}>
               <Button variant="outlined" color="primary" onClick={() => setEditFormExpanded(false)}>
@@ -678,7 +739,6 @@ const SportsType = () => {
               <Typography sx={{ color: '#3b6fa0', fontSize: { xs: '18px', sm: '20px' }, fontWeight: '500', mb: 2 }}>
                 General Information
               </Typography>
-
               <Box sx={{ display: 'flex', flexDirection: 'row', flexWrap: 'wrap', gap: 2, mb: 3 }}>
                 <Box sx={{ display: 'flex', flexDirection: 'column', width: { xs: '100%', sm: '48%', md: '220px' } }}>
                   <Typography sx={{ color: '#3b6fa0', fontSize: '15px', fontWeight: '500' }}>Title</Typography>
@@ -711,7 +771,7 @@ const SportsType = () => {
                     disablePortal
                     value={sportTypeInputEdit.teamAdmin as unknown as UserView}
                     options={users}
-                    getOptionLabel={(option) => option.fullName}
+                    getOptionLabel={(option) => option.fullName as string}
                     onChange={(e, props) => setSportTypeInputEdit({ ...sportTypeInputEdit, teamAdminId: props?.userId })}
                     renderInput={(params) => <TextField {...params} size="small" sx={{ width: '100%', backgroundColor: 'white' }} />}
                   />
@@ -723,7 +783,7 @@ const SportsType = () => {
                     <DateTimePicker
                       sx={{ width: '100%', backgroundColor: 'white' }}
                       value={sportTypeInputEdit.registrationTime ? dayjs(sportTypeInputEdit.registrationTime) : null}
-                      onChange={(newValue) => setSportTypeInputEdit({ ...sportTypeInputEdit, registrationTime: newValue?.toDate() || null as unknown as Date })}
+                      onChange={(newValue) => setSportTypeInputEdit({ ...sportTypeInputEdit, registrationTime:(dayjs(newValue).format(('YYYY-MM-DD hh:mm:ss')) || null) as unknown as Date })}
                       slotProps={{ textField: { size: 'small' } }}
                     />
                   </LocalizationProvider>
@@ -734,11 +794,25 @@ const SportsType = () => {
                     <DateTimePicker
                       sx={{ width: '100%', backgroundColor: 'white' }}
                       value={sportTypeInputEdit.replacementTime ? dayjs(sportTypeInputEdit.replacementTime) : null}
-                      onChange={(newValue) => setSportTypeInputEdit({ ...sportTypeInputEdit, replacementTime: newValue?.toDate() || null as unknown as Date })}
+                      onChange={(newValue) => setSportTypeInputEdit({ ...sportTypeInputEdit, replacementTime:(dayjs(newValue).format(('YYYY-MM-DD hh:mm:ss')) || null) as unknown as Date })}
                       slotProps={{ textField: { size: 'small' } }}
                     />
                   </LocalizationProvider>
                 </Box>
+              </Box>
+              <Box sx={{ display: 'flex', flexDirection: 'column', width: { xs: '100%', sm: '48%', md: '220px' } }}>
+                <Typography sx={{ color: '#3b6fa0', fontSize: '15px', fontWeight: '500' }}>Logo</Typography>
+                <div>
+                  <input
+                    type="file"
+                    id="logo"
+                    onChange={handleFileChange}
+                    accept="image/*"
+                  />
+                  {imagePreview && (
+                    <img src={imagePreview} alt="Sport Logo" style={{ width: '180px', height: 'auto' }} />
+                  )}
+                </div>
               </Box>
               <Divider sx={{ my: 3 }} />
               <Typography sx={{ color: '#3b6fa0', fontSize: { xs: '18px', sm: '20px' }, fontWeight: '500', mb: 2 }}>
